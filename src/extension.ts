@@ -54,6 +54,29 @@ async function generateSqliteFixture() {
 
 	await addWorkspaceFolder(helpersDatabaseFolderPath);
 	await addWorkspaceFolder(modelsFolderPath);
+
+	await addModelFile(modelsFolderPath);
+}
+
+async function addModelFile(modelsFolderPath: fs.PathLike){
+	const dbModelName = await vscode.window.showInputBox(inputBoxOptions);
+
+	const modelData = "test";
+
+	if (dbModelName === undefined) {
+		vscode.window.showErrorMessage('Invalid model name');
+		return;
+	}
+
+	try {
+		var dbModelPath = modelsFolderPath + "/" + dbModelName + ".dart";
+		await writeFile(dbModelPath, modelData, 'utf8');
+
+		console.log('The file ${dbModelPath} was created.');
+	} catch (error) {
+		vscode.window.showErrorMessage('Something went wrong. The content file ${dbModelPath} was not created.');
+		return;
+	}
 }
 
 async function addWorkspaceFolder(workspaceFolderPath: fs.PathLike) {
