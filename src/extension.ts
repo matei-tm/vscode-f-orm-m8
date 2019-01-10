@@ -38,8 +38,6 @@ const inputBoxOptions: vscode.InputBoxOptions = {
 };
 
 async function generateSqliteFixture() {
-	const dbModelName = await vscode.window.showInputBox(inputBoxOptions);
-
 	var currentWorkspace = vscode.workspace;
 
 	if (currentWorkspace === undefined) {
@@ -52,8 +50,10 @@ async function generateSqliteFixture() {
 	var currentFolder = currentWorkspace.rootPath;
 
 	var helpersDatabaseFolderPath = currentFolder + "/lib/helpers/database";
+	var modelsFolderPath = currentFolder + "/lib/models";
 
 	await addWorkspaceFolder(helpersDatabaseFolderPath);
+	await addWorkspaceFolder(modelsFolderPath);
 }
 
 async function addWorkspaceFolder(workspaceFolderPath: fs.PathLike) {
@@ -61,7 +61,8 @@ async function addWorkspaceFolder(workspaceFolderPath: fs.PathLike) {
 		//TODO: test if folder exists
 
 		await mkdir(workspaceFolderPath);
-		console.log('The folder ${workspaceFolderPath} was not created.');
+
+		console.log('The folder ${workspaceFolderPath} was created.');
 	} catch (error) {
 		vscode.window.showErrorMessage('Something went wrong. The folder ${workspaceFolderPath} was not created.');
 		return;
