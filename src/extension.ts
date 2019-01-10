@@ -68,13 +68,14 @@ async function addModelFile(modelsFolderPath: fs.PathLike){
 		return;
 	}
 
-	try {
-		var dbModelPath = modelsFolderPath + "/" + dbModelName + ".dart";
+	var dbModelPath = modelsFolderPath + "/" + dbModelName + ".dart";
+
+	try {		
 		await writeFile(dbModelPath, modelData, 'utf8');
 
-		console.log('The file ${dbModelPath} was created.');
+		console.log(`The file ${dbModelPath} was created.`);
 	} catch (error) {
-		vscode.window.showErrorMessage('Something went wrong. The content file ${dbModelPath} was not created.');
+		vscode.window.showErrorMessage(`Something went wrong. The content file ${dbModelPath} was not created.`);
 		return;
 	}
 }
@@ -85,9 +86,9 @@ async function addWorkspaceFolder(workspaceFolderPath: fs.PathLike) {
 
 		await mkdir(workspaceFolderPath);
 
-		console.log('The folder ${workspaceFolderPath} was created.');
+		console.log(`The folder ${workspaceFolderPath} was created.`);
 	} catch (error) {
-		vscode.window.showErrorMessage('Something went wrong. The folder ${workspaceFolderPath} was not created.');
+		vscode.window.showErrorMessage(`Something went wrong. The folder ${workspaceFolderPath} was not created.`);
 		return;
 	}
 }
