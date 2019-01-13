@@ -49,16 +49,18 @@ async function generateSqliteFixture() {
 
 	var currentFolder = currentWorkspace.rootPath;
 
-	var helpersDatabaseFolderPath = currentFolder + "/lib/helpers/database";
+	var helpersFolderPath = currentFolder + "/lib/helpers";
+	var helpersDatabaseFolderPath = helpersFolderPath + "/database";
 	var modelsFolderPath = currentFolder + "/lib/models";
 
+	await addWorkspaceFolder(helpersFolderPath);
 	await addWorkspaceFolder(helpersDatabaseFolderPath);
 	await addWorkspaceFolder(modelsFolderPath);
 
 	await addModelFile(modelsFolderPath);
 }
 
-async function addModelFile(modelsFolderPath: fs.PathLike){
+async function addModelFile(modelsFolderPath: fs.PathLike) {
 	const dbModelName = await vscode.window.showInputBox(inputBoxOptions);
 
 	const modelData = "test";
@@ -70,7 +72,7 @@ async function addModelFile(modelsFolderPath: fs.PathLike){
 
 	var dbModelPath = modelsFolderPath + "/" + dbModelName + ".dart";
 
-	try {		
+	try {
 		await writeFile(dbModelPath, modelData, 'utf8');
 
 		console.log(`The file ${dbModelPath} was created.`);
@@ -81,12 +83,16 @@ async function addModelFile(modelsFolderPath: fs.PathLike){
 }
 
 async function addWorkspaceFolder(workspaceFolderPath: fs.PathLike) {
+
 	try {
-		//TODO: test if folder exists
+		if (fs.existsSync(workspaceFolderPath)) {
+			console.log(`The folder ${workspaceFolderPath} exists.`);
+			return;
+		}
 
 		await mkdir(workspaceFolderPath);
-
 		console.log(`The folder ${workspaceFolderPath} was created.`);
+
 	} catch (error) {
 		vscode.window.showErrorMessage(`Something went wrong. The folder ${workspaceFolderPath} was not created.`);
 		return;
