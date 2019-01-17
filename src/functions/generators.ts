@@ -41,6 +41,16 @@ export async function generateSqliteFixture() {
     vscode.window.showInformationMessage('Flutter: Generate Sqlite Fixture was successful!');
 }
 
+export function pubspecFileIsOpen() {
+    return (
+      vscode.window.activeTextEditor &&
+      (vscode.window.activeTextEditor.document.fileName.endsWith(
+        "pubspec.yaml"
+      ) ||
+        vscode.window.activeTextEditor.document.fileName.endsWith("pubspec.yml"))
+    );
+  }
+
 async function addDatabaseHelpers(helpersDatabaseFolderPath: fs.PathLike) {
     const abstractDatabaseHelperContent = getAbstractDatabaseHelper();
 
