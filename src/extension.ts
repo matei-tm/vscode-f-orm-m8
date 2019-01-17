@@ -3,6 +3,7 @@
 import * as vscode from 'vscode';
 import { promisify } from 'util';
 import * as fs from 'fs';
+import getAbstractDatabaseHelper from './templates/database/abstract_database_helper';
 
 const mkdir = promisify(fs.mkdir);
 const writeFile = promisify(fs.writeFile);
@@ -57,7 +58,25 @@ async function generateSqliteFixture() {
 	await addWorkspaceFolder(helpersDatabaseFolderPath);
 	await addWorkspaceFolder(modelsFolderPath);
 
+	await DependenciesSolver.addDependencyOnSqflite();
+	await addDatabaseHelpers(helpersDatabaseFolderPath);
 	await addModelFile(modelsFolderPath);
+}
+
+async function addDatabaseHelpers(helpersDatabaseFolderPath: fs.PathLike) {
+	const abstractDatabaseHelperContent = getAbstractDatabaseHelper();
+
+	var abstractDatabaseHelperFilePath = helpersDatabaseFolderPath + "/abstract_database_helper.dart";
+
+	try {
+		await writeFile(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent, 'utf8');
+
+		console.log(`The file ${abstractDatabaseHelperFilePath} was created.`);
+	} catch (error) {
+		vscode.window.showErrorMessage(`Something went wrong. The content file ${abstractDatabaseHelperFilePath} was not created.`);
+		return;
+	}
+
 }
 
 async function addModelFile(modelsFolderPath: fs.PathLike) {
