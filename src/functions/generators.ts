@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { promisify } from 'util';
 import * as fs from 'fs';
 import getAbstractDatabaseHelper from '../templates/database/abstract_database_helper';
+import { DependenciesSolver } from "../utils/dependencies_solver";
 
 const mkdir = promisify(fs.mkdir);
 const writeFile = promisify(fs.writeFile);
@@ -10,6 +11,11 @@ const inputBoxOptions: vscode.InputBoxOptions = {
     placeHolder: 'SqliteExtension',
     prompt: 'Input your model name in camel case.'
 };
+
+export enum InsertionMethod {
+    ADD = "Added",
+    REPLACE = "Replaced"
+}
 
 export default generateSqliteFixture;
 
@@ -33,7 +39,7 @@ export async function generateSqliteFixture() {
     await addWorkspaceFolder(helpersDatabaseFolderPath);
     await addWorkspaceFolder(modelsFolderPath);
 
-    await DependenciesSolver.solveDependencyOnSqflite();
+    await addOrUpdateDependencyOnSqflite(currentFolder);
 
     await addDatabaseHelpers(helpersDatabaseFolderPath);
     await addModelFile(modelsFolderPath);
@@ -41,15 +47,9 @@ export async function generateSqliteFixture() {
     vscode.window.showInformationMessage('Flutter: Generate Sqlite Fixture was successful!');
 }
 
-export function pubspecFileIsOpen() {
-    return (
-      vscode.window.activeTextEditor &&
-      (vscode.window.activeTextEditor.document.fileName.endsWith(
-        "pubspec.yaml"
-      ) ||
-        vscode.window.activeTextEditor.document.fileName.endsWith("pubspec.yml"))
-    );
-  }
+async function addOrUpdateDependencyOnSqflite(currentFolder: any) {
+    DependenciesSolver.solveDependencyOnSqflite(currentFolder);
+}
 
 async function addDatabaseHelpers(helpersDatabaseFolderPath: fs.PathLike) {
     const abstractDatabaseHelperContent = getAbstractDatabaseHelper();
