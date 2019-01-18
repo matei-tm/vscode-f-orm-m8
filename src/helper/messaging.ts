@@ -14,11 +14,11 @@ let errorOptions = [
 ];
 
 export function showInfo(message: string): Thenable<string | undefined> {
-  return vscode.window.showInformationMessage(`Pubspec Assist: ${message}`);
+  return vscode.window.showInformationMessage(`SqliteGen Assist: ${message}`);
 }
 
 export function showError(error: Error, isCritical: boolean = false): void {
-  let message: string = "Pubspec Assist: ";
+  let message: string = "SqliteGen Assist: ";
   if (!isCritical) {
     message += error.message;
     vscode.window.showErrorMessage(message);

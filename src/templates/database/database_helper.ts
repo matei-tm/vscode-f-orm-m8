@@ -1,3 +1,5 @@
+import { Utils } from "../../utils/utils";
+
 /**
  * Generates the content for the /helpers/database/database_helper.dart file
  * Returns a string with the content
@@ -7,8 +9,8 @@
  * @param createTablesConcatenation is the concatenation of "await create${EntityName}Table(db);"
 */
 export default function getDatabaseHelper(importsMixinConcatenation: string, mixinHelpersConcatenation: string, createTablesConcatenation: string): string {
-  var headingWarning = Utils.getHeadingWarning();
-  
+  var headingWarning = Utils.getHeadingWarning();  
+
   return `
 ${headingWarning}
 import 'dart:async';
@@ -17,7 +19,8 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 ${importsMixinConcatenation}
 
-class DatabaseHelper with ${mixinHelpersConcatenation} {
+class DatabaseHelper ${mixinHelpersConcatenation} 
+{
   static final DatabaseHelper _instance = new DatabaseHelper.internal();
 
   factory DatabaseHelper() => _instance;

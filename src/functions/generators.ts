@@ -3,6 +3,9 @@ import { promisify } from 'util';
 import * as fs from 'fs';
 import getAbstractDatabaseHelper from '../templates/database/abstract_database_helper';
 import { DependenciesSolver } from "../utils/dependencies_solver";
+import { showError, showInfo, showCriticalError } from "../helper/messaging";
+import getDatabaseHelper from "../templates/database/database_helper";
+import getDbEntityAbstractContent from "../templates/database/db_entity";
 
 const mkdir = promisify(fs.mkdir);
 const writeFile = promisify(fs.writeFile);
@@ -23,7 +26,7 @@ export async function generateSqliteFixture() {
     var currentWorkspace = vscode.workspace;
 
     if (currentWorkspace === undefined) {
-        vscode.window.showErrorMessage('A Flutter project is not opened in the current workspace.');
+        showInfo('A Flutter project is not opened in the current workspace.');
         return;
     }
 
@@ -41,30 +44,51 @@ export async function generateSqliteFixture() {
 
     await addOrUpdateDependencyOnSqflite(currentFolder);
 
-    await addDatabaseHelpers(helpersDatabaseFolderPath);
-    await addModelFile(modelsFolderPath);
+    await addAbstractDatabaseHelper(helpersDatabaseFolderPath);
+    await addDatabaseHelper(helpersDatabaseFolderPath);
+    await addDbEntity(helpersDatabaseFolderPath);
+    //await addModelFile(modelsFolderPath);
 
-    vscode.window.showInformationMessage('Flutter: Generate Sqlite Fixture was successful!');
+    showInfo('Flutter: Generate Sqlite Fixture was successful!');
 }
 
 async function addOrUpdateDependencyOnSqflite(currentFolder: any) {
     DependenciesSolver.solveDependencyOnSqflite(currentFolder);
 }
 
-async function addDatabaseHelpers(helpersDatabaseFolderPath: fs.PathLike) {
+async function addAbstractDatabaseHelper(helpersDatabaseFolderPath: fs.PathLike) {
     const abstractDatabaseHelperContent = getAbstractDatabaseHelper();
 
     var abstractDatabaseHelperFilePath = helpersDatabaseFolderPath + "/abstract_database_helper.dart";
 
+    await addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
+}
+
+async function addDatabaseHelper(helpersDatabaseFolderPath: fs.PathLike) {
+    const abstractDatabaseHelperContent = getDatabaseHelper("//importsMixinConcatenation", "//mixinHelpersConcatenation", "//createTablesConcatenation");
+
+    var abstractDatabaseHelperFilePath = helpersDatabaseFolderPath + "/database_helper.dart";
+
+    await addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
+}
+
+async function addDbEntity(helpersDatabaseFolderPath: fs.PathLike) {
+    const abstractDatabaseHelperContent = getDbEntityAbstractContent();
+
+    var abstractDatabaseHelperFilePath = helpersDatabaseFolderPath + "/db_entity.dart";
+
+    await addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
+}
+
+async function addFileWithContent(generatedFilePath: string, generatedFileContent: string) {
     try {
-        await writeFile(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent, 'utf8');
-
-        console.log(`The file ${abstractDatabaseHelperFilePath} was created.`);
-    } catch (error) {
-        vscode.window.showErrorMessage(`Something went wrong. The content file ${abstractDatabaseHelperFilePath} was not created.`);
-        return;
+        await writeFile(generatedFilePath, generatedFileContent, 'utf8');
+        console.log(`The file ${generatedFilePath} was created.`);
     }
-
+    catch (error) {
+        console.log(`Something went wrong. The content file ${generatedFilePath} was not created.`);
+        showCriticalError(error);
+    }
 }
 
 async function addModelFile(modelsFolderPath: fs.PathLike) {
@@ -73,7 +97,7 @@ async function addModelFile(modelsFolderPath: fs.PathLike) {
     const modelData = "test";
 
     if (dbModelName === undefined) {
-        vscode.window.showErrorMessage('Invalid model name');
+        showInfo('Invalid model name');
         return;
     }
 
@@ -84,7 +108,8 @@ async function addModelFile(modelsFolderPath: fs.PathLike) {
 
         console.log(`The file ${dbModelPath} was created.`);
     } catch (error) {
-        vscode.window.showErrorMessage(`Something went wrong. The content file ${dbModelPath} was not created.`);
+        console.log(`Something went wrong. The content file ${dbModelPath} was not created.`);
+        showCriticalError(error);
         return;
     }
 }
@@ -101,7 +126,8 @@ async function addWorkspaceFolder(workspaceFolderPath: fs.PathLike) {
         console.log(`The folder ${workspaceFolderPath} was created.`);
 
     } catch (error) {
-        vscode.window.showErrorMessage(`Something went wrong. The folder ${workspaceFolderPath} was not created.`);
+        console.log(`Something went wrong. The folder ${workspaceFolderPath} was not created.`);
+        showCriticalError(error);
         return;
     }
 }

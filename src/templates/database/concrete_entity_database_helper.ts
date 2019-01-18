@@ -1,3 +1,5 @@
+import { Utils } from "../../utils/utils";
+
 /**
  * Generates the content for the /helpers/database/database_helper.dart file
  * Returns a string with the content

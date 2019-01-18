@@ -1,3 +1,5 @@
+import { Utils } from "../../utils/utils";
+
 /**
  * Generates the content for the /models/db_entity.dart file
  * Returns a string with the content

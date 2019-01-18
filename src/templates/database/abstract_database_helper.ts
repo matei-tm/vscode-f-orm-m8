@@ -1,7 +1,10 @@
+import { Utils } from "../../utils/utils";
+
 /**
  * Generates the content for the /helpers/database/abstract_database_helper.dart file
  * Returns a string with the content
 */
+
 export default function getAbstractDatabaseHelper(): string {
   var headingWarning = Utils.getHeadingWarning();
   
