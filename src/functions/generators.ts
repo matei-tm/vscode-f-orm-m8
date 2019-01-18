@@ -23,16 +23,15 @@ export enum InsertionMethod {
 export default generateSqliteFixture;
 
 export async function generateSqliteFixture() {
-    var currentWorkspace = vscode.workspace;
 
-    if (currentWorkspace === undefined) {
-        showInfo('A Flutter project is not opened in the current workspace.');
+    if (!isFlutterProjectOnCurrentFolder()) {
         return;
     }
 
-    //TODO: test if flutter project folder is opened
-
+    var currentWorkspace = vscode.workspace;
     var currentFolder = currentWorkspace.rootPath;
+
+    await addOrUpdateDependencyOnSqflite(currentFolder);
 
     var helpersFolderPath = currentFolder + "/lib/helpers";
     var helpersDatabaseFolderPath = helpersFolderPath + "/database";
@@ -42,14 +41,35 @@ export async function generateSqliteFixture() {
     await addWorkspaceFolder(helpersDatabaseFolderPath);
     await addWorkspaceFolder(modelsFolderPath);
 
-    await addOrUpdateDependencyOnSqflite(currentFolder);
-
     await addAbstractDatabaseHelper(helpersDatabaseFolderPath);
     await addDatabaseHelper(helpersDatabaseFolderPath);
     await addDbEntity(helpersDatabaseFolderPath);
     //await addModelFile(modelsFolderPath);
 
     showInfo('Flutter: Generate Sqlite Fixture was successful!');
+}
+
+function isFlutterProjectOnCurrentFolder(): boolean {
+    var currentWorkspace = vscode.workspace;
+
+    if (currentWorkspace === undefined || currentWorkspace.name === undefined) {
+        showError(new Error('A Flutter workspace is not opened in the current session.'), false);
+        return false;
+    }
+
+    var currentFolder = currentWorkspace.rootPath;
+
+    if (currentFolder === undefined) {
+        showError(new Error('A Flutter folder is not opened in the current workspace.'), false);
+        return false;
+    }
+
+    if (!fs.existsSync(currentFolder + "/pubspec.yaml")) {
+        showError(new Error('The current folder is not a Flutter one, or an inner folder is opened. Open the Flutter project root folder.'), false);
+        return false;
+    }
+
+    return true;
 }
 
 async function addOrUpdateDependencyOnSqflite(currentFolder: any) {
