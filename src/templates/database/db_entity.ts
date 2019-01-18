@@ -3,7 +3,10 @@
  * Returns a string with the content
 */
 export default function getDbEntityAbastrctContent(): string {
+  var headingWarning = Utils.getHeadingWarning();
+  
   return `
+${headingWarning}
 abstract class DbEntity {
   int _id;
   int get id => _id;

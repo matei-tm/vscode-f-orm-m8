@@ -6,9 +6,12 @@ export default function getConcreteEntitySkeletonContent(
   packageName: string,
   entityNameInPascalCase: string,
 ): string {
+  var headingWarning = Utils.getHeadingWarning();
+  
   return `
+${headingWarning}
 
-import 'package:${packageName}/models/db_entity.dart';
+import 'package:${packageName}/database/db_entity.dart';
 
 class ${entityNameInPascalCase} implements DbEntity {
   int _id;
