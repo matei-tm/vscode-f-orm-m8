@@ -3,6 +3,7 @@ import * as vscode from "vscode";
 import { showError, showInfo, showCriticalError } from "../helper/messaging";
 import { PubError } from "../model/pubError";
 
+const sqfliteVersion = '1.0.0';
 export class DependenciesSolver {
     static async solveDependencyOnSqflite(currentFolder: any) {
         try {
@@ -57,7 +58,7 @@ export class DependenciesSolver {
         pubspecString: string
     ): { insertionMethod: InsertionMethod; result: string } {
         var sqflitePackageName = 'sqflite';
-        var sqflitePackageVersion = '0.13.0';
+        var sqflitePackageVersion = sqfliteVersion;
         var sqfliteDependencyString = `${sqflitePackageName}: ^${sqflitePackageVersion}`;
 
         let insertionMethod = InsertionMethod.ADD;
