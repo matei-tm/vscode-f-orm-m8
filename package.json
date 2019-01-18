@@ -3,11 +3,17 @@
 	"displayName": "Flutter Sqlite Generator",
 	"description": "Vs Code Extension to generate Sqlite CRUD classes",
 	"version": "0.0.1",
+	"license": "SEE LICENSE IN LICENSE",
 	"publisher": "Mircea-Tiberiu MATEI",
+	"author": {
+		"name": "Mircea-Tiberiu MATEI",
+		"url": "https://github.com/matei-tm/",
+		"email": "mircea@matei-tm.eu"
+	},
 	"repository": {
-        "type": "git",
-        "url": "https://github.com/matei-tm/vscode-flutter-sqlite-extension.git"
-    },
+		"type": "git",
+		"url": "https://github.com/matei-tm/vscode-flutter-sqlite-extension.git"
+	},
 	"engines": {
 		"vscode": "^1.30.0"
 	},
@@ -41,8 +47,6 @@
 		"@types/mocha": "^2.2.42"
 	},
 	"dependencies": {
-	  "@types/js-yaml": "^3.11.2",
-	  "js-yaml": "^3.12.0",
-	  "openurl": "^1.1.1"
+		"openurl": "^1.1.1"
 	}
 }
