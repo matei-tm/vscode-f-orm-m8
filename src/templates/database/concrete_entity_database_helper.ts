@@ -20,7 +20,10 @@ export default function getConcreteEntityDatabaseHelper(
   var entityNameInCamelCase = Utils.getEntityNameInCamelCase(entityNameInPascalCase);
   var entityNamePluralsInPascalCase = Utils.getEntityNamePluralsInPascalCase(entityNameInPascalCase);
 
+  var headingWarning = Utils.getHeadingWarning();
+  
   return `
+${headingWarning}
 import 'package:sqflite/sqflite.dart';
 import 'package:${packageName}/helpers/database/abstract_database_helper.dart';
 import 'package:${packageName}/models/${entityNameInUnderscoreCase}.dart';

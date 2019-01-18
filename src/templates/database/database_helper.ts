@@ -7,7 +7,10 @@
  * @param createTablesConcatenation is the concatenation of "await create${EntityName}Table(db);"
 */
 export default function getDatabaseHelper(importsMixinConcatenation: string, mixinHelpersConcatenation: string, createTablesConcatenation: string): string {
+  var headingWarning = Utils.getHeadingWarning();
+  
   return `
+${headingWarning}
 import 'dart:async';
 
 import 'package:sqflite/sqflite.dart';

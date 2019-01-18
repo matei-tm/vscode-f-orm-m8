@@ -3,7 +3,10 @@
  * Returns a string with the content
 */
 export default function getAbstractDatabaseHelper(): string {
+  var headingWarning = Utils.getHeadingWarning();
+  
   return `
+${headingWarning}
 import 'package:sqflite/sqflite.dart';
 
 abstract class AbstractDatabaseHelper {
