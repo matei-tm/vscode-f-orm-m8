@@ -1,4 +1,4 @@
-import { Utils } from "../../utils/utils";
+import getHeadingWarning from "../heading_warning";
 
 /**
  * Generates the content for the /helpers/database/database_helper.dart file
@@ -8,11 +8,15 @@ import { Utils } from "../../utils/utils";
  * @param mixinHelpersConcatenation is the concatenation of mixin classes "${EntityName}DatabaseHelper"
  * @param createTablesConcatenation is the concatenation of "await create${EntityName}Table(db);"
 */
-export default function getDatabaseHelper(importsMixinConcatenation: string, mixinHelpersConcatenation: string, createTablesConcatenation: string): string {
-  var headingWarning = Utils.getHeadingWarning();  
+export default function getDatabaseHelper(
+  version: string,
+  importsMixinConcatenation: string,
+  mixinHelpersConcatenation: string,
+  createTablesConcatenation: string): string {
 
-  return `
-${headingWarning}
+  var headingWarning = getHeadingWarning(version);
+
+  return `${headingWarning}
 import 'dart:async';
 
 import 'package:sqflite/sqflite.dart';

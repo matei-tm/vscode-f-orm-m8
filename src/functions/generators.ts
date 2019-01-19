@@ -6,6 +6,7 @@ import { DependenciesSolver } from "../utils/dependencies_solver";
 import { showError, showInfo, showCriticalError } from "../helper/messaging";
 import getDatabaseHelper from "../templates/database/database_helper";
 import getDbEntityAbstractContent from "../templates/database/db_entity";
+import * as Path from 'path';
 
 const mkdir = promisify(fs.mkdir);
 const writeFile = promisify(fs.writeFile);
@@ -22,7 +23,12 @@ export enum InsertionMethod {
 
 export default generateSqliteFixture;
 
-export async function generateSqliteFixture() {
+export async function generateSqliteFixture(extensionContext: vscode.ExtensionContext) {
+    var extensionVersion = getExtensionVersion(extensionContext);
+
+    if (extensionVersion === undefined) {
+        return;
+    }
 
     if (!isFlutterProjectOnCurrentFolder()) {
         return;
@@ -41,12 +47,33 @@ export async function generateSqliteFixture() {
     await addWorkspaceFolder(helpersDatabaseFolderPath);
     await addWorkspaceFolder(modelsFolderPath);
 
-    await addAbstractDatabaseHelper(helpersDatabaseFolderPath);
-    await addDatabaseHelper(helpersDatabaseFolderPath);
-    await addDbEntity(helpersDatabaseFolderPath);
+    await addAbstractDatabaseHelper(helpersDatabaseFolderPath, extensionVersion);
+    await addDatabaseHelper(helpersDatabaseFolderPath, extensionVersion);
+    await addDbEntity(helpersDatabaseFolderPath, extensionVersion);
     //await addModelFile(modelsFolderPath);
 
     showInfo('Flutter: Generate Sqlite Fixture was successful!');
+}
+
+function getExtensionVersion(extensionContext: vscode.ExtensionContext): any {
+
+    try {
+        var extensionPath = Path.join(extensionContext.extensionPath, "package.json");
+        var packageFile = JSON.parse(fs.readFileSync(extensionPath, 'utf8'));
+
+        if (packageFile) {
+            return packageFile.version;
+        }
+        else {
+            showError(new Error("The version attribute is missing"), true);
+        }
+    }
+    catch (error) {
+        showCriticalError(error);
+    }
+
+    return undefined;
+
 }
 
 function isFlutterProjectOnCurrentFolder(): boolean {
@@ -76,24 +103,24 @@ async function addOrUpdateDependencyOnSqflite(currentFolder: any) {
     DependenciesSolver.solveDependencyOnSqflite(currentFolder);
 }
 
-async function addAbstractDatabaseHelper(helpersDatabaseFolderPath: fs.PathLike) {
-    const abstractDatabaseHelperContent = getAbstractDatabaseHelper();
+async function addAbstractDatabaseHelper(helpersDatabaseFolderPath: fs.PathLike, version: string) {
+    const abstractDatabaseHelperContent = getAbstractDatabaseHelper(version);
 
     var abstractDatabaseHelperFilePath = helpersDatabaseFolderPath + "/abstract_database_helper.dart";
 
     await addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
 }
 
-async function addDatabaseHelper(helpersDatabaseFolderPath: fs.PathLike) {
-    const abstractDatabaseHelperContent = getDatabaseHelper("//importsMixinConcatenation", "//mixinHelpersConcatenation", "//createTablesConcatenation");
+async function addDatabaseHelper(helpersDatabaseFolderPath: fs.PathLike, version: string) {
+    const abstractDatabaseHelperContent = getDatabaseHelper(version, "//importsMixinConcatenation", "//mixinHelpersConcatenation", "//createTablesConcatenation");
 
     var abstractDatabaseHelperFilePath = helpersDatabaseFolderPath + "/database_helper.dart";
 
     await addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
 }
 
-async function addDbEntity(helpersDatabaseFolderPath: fs.PathLike) {
-    const abstractDatabaseHelperContent = getDbEntityAbstractContent();
+async function addDbEntity(helpersDatabaseFolderPath: fs.PathLike, version: string) {
+    const abstractDatabaseHelperContent = getDbEntityAbstractContent(version);
 
     var abstractDatabaseHelperFilePath = helpersDatabaseFolderPath + "/db_entity.dart";
 

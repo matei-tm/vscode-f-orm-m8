@@ -1,17 +1,17 @@
-import { Utils } from "../../utils/utils";
+import getHeadingWarning from "../heading_warning";
 
 /**
  * Generates the content for the /models/db_entity.dart file
  * Returns a string with the content
 */
 export default function getConcreteEntitySkeletonContent(
+  version: string,
   packageName: string,
   entityNameInPascalCase: string,
 ): string {
-  var headingWarning = Utils.getHeadingWarning();
+  var headingWarning = getHeadingWarning(version);
   
-  return `
-${headingWarning}
+  return `${headingWarning}
 
 import 'package:${packageName}/database/db_entity.dart';
 

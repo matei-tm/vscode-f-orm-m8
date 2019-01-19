@@ -1,14 +1,13 @@
-import { Utils } from "../../utils/utils";
+import getHeadingWarning from "../heading_warning";
 
 /**
  * Generates the content for the /models/db_entity.dart file
  * Returns a string with the content
 */
-export default function getDbEntityAbastrctContent(): string {
-  var headingWarning = Utils.getHeadingWarning();
+export default function getDbEntityAbastrctContent(version: string): string {
+  var headingWarning = getHeadingWarning(version);
   
-  return `
-${headingWarning}
+  return `${headingWarning}
 abstract class DbEntity {
   int _id;
   int get id => _id;

@@ -1,4 +1,5 @@
 import { Utils } from "../../utils/utils";
+import getHeadingWarning from "../heading_warning";
 
 /**
  * Generates the content for the /helpers/database/database_helper.dart file
@@ -13,6 +14,7 @@ import { Utils } from "../../utils/utils";
 */
 
 export default function getConcreteEntityDatabaseHelper(
+  version: string,
   packageName: string,
   entityNameInPascalCase: string,
   tableColumnsDefinitionConcatenation: string
@@ -22,10 +24,9 @@ export default function getConcreteEntityDatabaseHelper(
   var entityNameInCamelCase = Utils.getEntityNameInCamelCase(entityNameInPascalCase);
   var entityNamePluralsInPascalCase = Utils.getEntityNamePluralsInPascalCase(entityNameInPascalCase);
 
-  var headingWarning = Utils.getHeadingWarning();
+  var headingWarning = getHeadingWarning(version);
   
-  return `
-${headingWarning}
+  return `${headingWarning}
 import 'package:sqflite/sqflite.dart';
 import 'package:${packageName}/helpers/database/abstract_database_helper.dart';
 import 'package:${packageName}/models/${entityNameInUnderscoreCase}.dart';
