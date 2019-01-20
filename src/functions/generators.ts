@@ -11,9 +11,9 @@ import * as Path from 'path';
 const mkdir = promisify(fs.mkdir);
 const writeFile = promisify(fs.writeFile);
 
-const inputBoxOptions: vscode.InputBoxOptions = {
-    placeHolder: 'SqliteExtension',
-    prompt: 'Input your model name in camel case.'
+const newModelInputBoxOptions: vscode.InputBoxOptions = {
+    placeHolder: 'newModelName',
+    prompt: 'Input your model name in camel case. Leave empty to end.'
 };
 
 export enum InsertionMethod {
@@ -50,7 +50,8 @@ export async function generateSqliteFixture(extensionContext: vscode.ExtensionCo
     await addAbstractDatabaseHelper(helpersDatabaseFolderPath, extensionVersion);
     await addDatabaseHelper(helpersDatabaseFolderPath, extensionVersion);
     await addDbEntity(helpersDatabaseFolderPath, extensionVersion);
-    //await addModelFile(modelsFolderPath);
+
+    await addModelFiles(modelsFolderPath);
 
     showInfo('Flutter: Generate Sqlite Fixture was successful!');
 }
@@ -73,7 +74,6 @@ function getExtensionVersion(extensionContext: vscode.ExtensionContext): any {
     }
 
     return undefined;
-
 }
 
 function isFlutterProjectOnCurrentFolder(): boolean {
@@ -138,26 +138,31 @@ async function addFileWithContent(generatedFilePath: string, generatedFileConten
     }
 }
 
-async function addModelFile(modelsFolderPath: fs.PathLike) {
-    const dbModelName = await vscode.window.showInputBox(inputBoxOptions);
+async function addModelFiles(modelsFolderPath: fs.PathLike) {
+    while (true) {
+        const dbModelName = await vscode.window.showInputBox(newModelInputBoxOptions);
+        if (!dbModelName) {
+            return;
+        }
 
-    const modelData = "test";
+        const modelData = "//empty model";
 
-    if (dbModelName === undefined) {
-        showInfo('Invalid model name');
-        return;
-    }
+        if (dbModelName === undefined) {
+            showInfo('Invalid model name');
+            return;
+        }
 
-    var dbModelPath = modelsFolderPath + "/" + dbModelName + ".dart";
+        var dbModelPath = modelsFolderPath + "/" + dbModelName + ".dart";
 
-    try {
-        await writeFile(dbModelPath, modelData, 'utf8');
+        try {
+            await writeFile(dbModelPath, modelData, 'utf8');
 
-        console.log(`The file ${dbModelPath} was created.`);
-    } catch (error) {
-        console.log(`Something went wrong. The content file ${dbModelPath} was not created.`);
-        showCriticalError(error);
-        return;
+            console.log(`The file ${dbModelPath} was created.`);
+        } catch (error) {
+            console.log(`Something went wrong. The content file ${dbModelPath} was not created.`);
+            showCriticalError(error);
+            return;
+        }
     }
 }
 
