@@ -18,5 +18,20 @@ abstract class DbEntity {
 
   Map<String, dynamic> toMap();
 }
+
+abstract class DbAccountEntity implements DbEntity {
+  int _id;
+  String _accountName;
+  String _accountEmail;
+  String _accountAbbr;
+
+  int get id => _id;
+  
+  DbAccountEntity.empty();
+  DbAccountEntity.map(dynamic obj);
+  DbAccountEntity.fromMap(Map<String, dynamic> map);
+
+  Map<String, dynamic> toMap();
+}
 `;
 }
