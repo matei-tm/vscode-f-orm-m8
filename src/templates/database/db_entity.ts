@@ -26,7 +26,12 @@ abstract class DbAccountEntity implements DbEntity {
   String _accountAbbr;
 
   int get id => _id;
+  String get accountName => _accountName;
+  String get accountEmail => _accountEmail;
+  String get accountAbbr => _accountAbbr;
   
+  DbAccountEntity(this._accountName, this._accountEmail, this._accountAbbr);
+
   DbAccountEntity.empty();
   DbAccountEntity.map(dynamic obj);
   DbAccountEntity.fromMap(Map<String, dynamic> map);
