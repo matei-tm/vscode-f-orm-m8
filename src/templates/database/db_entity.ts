@@ -8,35 +8,26 @@ export default function getDbEntityAbastrctContent(version: string): string {
   var headingWarning = getHeadingWarning(version);
   
   return `${headingWarning}
-abstract class DbEntity {
-  int _id;
-  int get id => _id;
+
+  abstract class DbEntity {
+    int get id;
   
-  DbEntity.empty();
-  DbEntity.map(dynamic obj);
-  DbEntity.fromMap(Map<String, dynamic> map);
-
-  Map<String, dynamic> toMap();
-}
-
-abstract class DbAccountEntity implements DbEntity {
-  int _id;
-  String _accountName;
-  String _accountEmail;
-  String _accountAbbr;
-
-  int get id => _id;
-  String get accountName => _accountName;
-  String get accountEmail => _accountEmail;
-  String get accountAbbr => _accountAbbr;
+    DbEntity.empty();
+    DbEntity.map(dynamic obj);
+    DbEntity.fromMap(Map<String, dynamic> map);
   
-  DbAccountEntity(this._accountName, this._accountEmail, this._accountAbbr);
+    Map<String, dynamic> toMap();
+  }
+  
+  abstract class DbAccountEntity implements DbEntity {
+    String get accountName;
+    String get accountEmail;
+    String get accountAbbr;
+  }
 
-  DbAccountEntity.empty();
-  DbAccountEntity.map(dynamic obj);
-  DbAccountEntity.fromMap(Map<String, dynamic> map);
-
-  Map<String, dynamic> toMap();
-}
+  abstract class DbAccountRelatedEntity implements DbEntity {
+    int get accountId;
+  }
+  
 `;
 }
