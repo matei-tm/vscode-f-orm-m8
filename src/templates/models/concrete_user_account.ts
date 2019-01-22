@@ -6,7 +6,8 @@ export default function getConcreteUserAccountContent(
   var headingWarning = getHeadingWarning(version);
 
   return `${headingWarning}
-  import 'package:${packageName}/helpers/database/db_entity.dart';
+
+import 'package:${packageName}/helpers/database/db_entity.dart';
 
 class UserAccount implements DbAccountEntity {
   int _id;

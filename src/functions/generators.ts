@@ -7,6 +7,7 @@ import { showError, showInfo, showCriticalError } from "../helper/messaging";
 import getDatabaseHelper from "../templates/database/database_helper";
 import getDbEntityAbstractContent from "../templates/database/db_entity";
 import * as Path from 'path';
+import getConcreteUserAccountContent from "../templates/models/concrete_user_account";
 
 const mkdir = promisify(fs.mkdir);
 const writeFile = promisify(fs.writeFile);
@@ -37,7 +38,11 @@ export async function generateSqliteFixture(extensionContext: vscode.ExtensionCo
     var currentWorkspace = vscode.workspace;
     var currentFolder = currentWorkspace.rootPath;
 
-    await addOrUpdateDependencyOnSqflite(currentFolder);
+    var packageName = await addOrUpdateDependencyOnSqflite(currentFolder);
+    if (packageName === undefined || packageName === "") {
+        showError(new Error("The package name is missing"), true);
+        return;
+    }
 
     var helpersFolderPath = currentFolder + "/lib/helpers";
     var helpersDatabaseFolderPath = helpersFolderPath + "/database";
@@ -51,6 +56,7 @@ export async function generateSqliteFixture(extensionContext: vscode.ExtensionCo
     await addDatabaseHelper(helpersDatabaseFolderPath, extensionVersion);
     await addDbEntity(helpersDatabaseFolderPath, extensionVersion);
 
+    await addUserAccountModelFile(modelsFolderPath, extensionVersion, packageName);
     await addModelFiles(modelsFolderPath);
 
     showInfo('Flutter: Generate Sqlite Fixture was successful!');
@@ -99,8 +105,8 @@ function isFlutterProjectOnCurrentFolder(): boolean {
     return true;
 }
 
-async function addOrUpdateDependencyOnSqflite(currentFolder: any) {
-    DependenciesSolver.solveDependencyOnSqflite(currentFolder);
+async function addOrUpdateDependencyOnSqflite(currentFolder: any): Promise<string> {
+    return DependenciesSolver.solveDependencyOnSqflite(currentFolder);
 }
 
 async function addAbstractDatabaseHelper(helpersDatabaseFolderPath: fs.PathLike, version: string) {
@@ -135,6 +141,22 @@ async function addFileWithContent(generatedFilePath: string, generatedFileConten
     catch (error) {
         console.log(`Something went wrong. The content file ${generatedFilePath} was not created.`);
         showCriticalError(error);
+    }
+}
+
+async function addUserAccountModelFile(modelsFolderPath: fs.PathLike, version: string, packageName: string) {
+
+    var dbUserAccountModelPath = modelsFolderPath + "/user_account.dart";
+
+    try {
+        var concreteUserAccountContent = getConcreteUserAccountContent(version, packageName);
+        await writeFile(dbUserAccountModelPath, concreteUserAccountContent, 'utf8');
+
+        console.log(`The file ${dbUserAccountModelPath} was created.`);
+    } catch (error) {
+        console.log(`Something went wrong. The content file for ${dbUserAccountModelPath} was not created.`);
+        showCriticalError(error);
+        return;
     }
 }
 

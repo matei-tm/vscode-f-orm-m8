@@ -5,20 +5,27 @@ import { PubError } from "../model/pubError";
 
 const sqfliteVersion = '1.0.0';
 export class DependenciesSolver {
-    static async solveDependencyOnSqflite(currentFolder: any) {
+    static packageName: string;
+
+    static async solveDependencyOnSqflite(currentFolder: any): Promise<string> {
         try {
             await vscode.workspace.openTextDocument(currentFolder + "/pubspec.yaml")
                 .then(doc => vscode.window.showTextDocument(doc));
 
             if (!vscode.window.activeTextEditor || !DependenciesSolver.pubspecFileIsOpen()) {
                 showError(new PubError("Pubspec file not opened."));
-                return;
+                return "";
             }
 
             vscode.commands.executeCommand("editor.action.formatDocument");
 
             const pubspecString = vscode.window.activeTextEditor.document.getText();
             const originalLines = pubspecString.split("\n");
+
+            if (this.packageName === undefined || this.packageName === "") {
+                this.packageName = DependenciesSolver.getPackageName(pubspecString);
+            }
+
             const modifiedPubspec = DependenciesSolver.addDependencyByText(pubspecString);
 
             vscode.window.activeTextEditor.edit(editBuilder => {
@@ -42,6 +49,8 @@ export class DependenciesSolver {
         } catch (error) {
             showCriticalError(error);
         }
+
+        return this.packageName;
     }
 
     private static pubspecFileIsOpen(): any {
@@ -52,6 +61,32 @@ export class DependenciesSolver {
             ) ||
                 vscode.window.activeTextEditor.document.fileName.endsWith("pubspec.yml"))
         );
+    }
+
+    private static getPackageName(
+        pubspecString: string
+    ): string {
+        let lines = pubspecString.split("\n");
+
+        let packageNameLineIndex = lines.findIndex(
+            line => line.trim().substr(0, 5) === "name:"
+        );
+
+        if (packageNameLineIndex === -1) {
+            return "";
+        }
+
+        if (packageNameLineIndex !== -1) {
+            const originalLine = lines[packageNameLineIndex];
+
+            const sanitizedLine: string = originalLine.trim();
+            const colonIndex: number = sanitizedLine.indexOf(":");
+            const potentialMatch = sanitizedLine.substring(colonIndex + 1);
+
+            return potentialMatch.trim();
+        }
+
+        return "";
     }
 
     private static addDependencyByText(
