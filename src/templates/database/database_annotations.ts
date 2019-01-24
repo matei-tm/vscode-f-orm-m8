@@ -9,6 +9,12 @@ export default function getDatabaseAnnotationsHelper(version: string): string {
   var headingWarning = getHeadingWarning(version);
   
   return `${headingWarning}
+  class ColumnMetadata {
+    static const PrimaryKey = 1;
+    static const Unique = 2;
+    static const NotNull = 4;
+  }
+
   class DataTable {
     final String name;
   
@@ -19,8 +25,9 @@ export default function getDatabaseAnnotationsHelper(version: string): string {
   
   class DataColumn {
     final String name;
+    final int metadataLevel;
   
-    const DataColumn([this.name]);
+    const DataColumn([this.name, this.metadataLevel]);
   }
   
   const DataColumn column = const DataColumn();

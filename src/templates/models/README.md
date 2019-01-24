@@ -3,6 +3,13 @@ Use the following example to annotate model classes
 ```dart  
 @DataTable("profile_contacts")
 class ProfileContact {
+  @DataColumn("profile_contact_first_name", ColumnMetadata.PrimaryKey & ColumnMetadata.Unique)
+  String firstName;
+}
+
+
+@DataTable("profile_contacts")
+class ProfileContact {
   @DataColumn("profile_contact_first_name")
   @primaryKey
   @autoIncrement
