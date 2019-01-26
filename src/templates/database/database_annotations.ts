@@ -34,19 +34,5 @@ export default function getDatabaseAnnotationsHelper(version: string): string {
   }
   
   const DataColumn column = const DataColumn();
-  
-  class PrimaryKey {
-    final String name;
-  
-    const PrimaryKey([this.name]);
-  }
-  
-  const PrimaryKey primaryKey = const PrimaryKey();
-  
-  class AutoIncrement {
-    const AutoIncrement();
-  }
-  
-  const AutoIncrement autoIncrement = const AutoIncrement();
 `;
 }
