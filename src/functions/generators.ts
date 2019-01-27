@@ -8,6 +8,7 @@ import getDatabaseHelper from "../templates/database/database_helper";
 import getDbEntityAbstractContent from "../templates/database/db_entity";
 import * as Path from 'path';
 import getConcreteUserAccountContent from "../templates/models/concrete_user_account";
+import getDatabaseAnnotationsHelper from "../templates/database/database_annotations";
 
 const mkdir = promisify(fs.mkdir);
 const writeFile = promisify(fs.writeFile);
@@ -54,6 +55,7 @@ export async function generateSqliteFixture(extensionContext: vscode.ExtensionCo
 
     await addAbstractDatabaseHelper(helpersDatabaseFolderPath, extensionVersion);
     await addDatabaseHelper(helpersDatabaseFolderPath, extensionVersion);
+    await addDatabaseAnnotationsMetadata(helpersDatabaseFolderPath, extensionVersion);
     await addDbEntity(helpersDatabaseFolderPath, extensionVersion);
 
     await addUserAccountModelFile(modelsFolderPath, extensionVersion, packageName);
@@ -121,6 +123,14 @@ async function addDatabaseHelper(helpersDatabaseFolderPath: fs.PathLike, version
     const abstractDatabaseHelperContent = getDatabaseHelper(version, "//importsMixinConcatenation", "//mixinHelpersConcatenation", "//createTablesConcatenation");
 
     var abstractDatabaseHelperFilePath = helpersDatabaseFolderPath + "/database_helper.dart";
+
+    await addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
+}
+
+async function addDatabaseAnnotationsMetadata(helpersDatabaseFolderPath: fs.PathLike, version: string) {
+    const abstractDatabaseHelperContent = getDatabaseAnnotationsHelper(version);
+
+    var abstractDatabaseHelperFilePath = helpersDatabaseFolderPath + "/database_annotations.dart";
 
     await addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
 }
