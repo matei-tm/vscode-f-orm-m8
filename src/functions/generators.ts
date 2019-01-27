@@ -9,13 +9,15 @@ import getDbEntityAbstractContent from "../templates/database/db_entity";
 import * as Path from 'path';
 import getConcreteUserAccountContent from "../templates/models/concrete_user_account";
 import getDatabaseAnnotationsHelper from "../templates/database/database_annotations";
+import getConcreteEntitySkeletonContent from "../templates/models/concrete_entity";
+import { Utils } from "../utils/utils";
 
 const mkdir = promisify(fs.mkdir);
 const writeFile = promisify(fs.writeFile);
 
 const newModelInputBoxOptions: vscode.InputBoxOptions = {
-    placeHolder: 'newModelName',
-    prompt: 'Input your model name in camel case. Leave empty to end.'
+    placeHolder: 'YourNewModelName',
+    prompt: 'Input your model name in pascal case (Ex: YourNewModel). Leave empty to end.'
 };
 
 export enum InsertionMethod {
@@ -59,7 +61,7 @@ export async function generateSqliteFixture(extensionContext: vscode.ExtensionCo
     await addDbEntity(helpersDatabaseFolderPath, extensionVersion);
 
     await addUserAccountModelFile(modelsFolderPath, extensionVersion, packageName);
-    await addModelFiles(modelsFolderPath);
+    await addModelFiles(modelsFolderPath, extensionVersion, packageName);
 
     showInfo('Flutter: Generate Sqlite Fixture was successful!');
 }
@@ -170,21 +172,26 @@ async function addUserAccountModelFile(modelsFolderPath: fs.PathLike, version: s
     }
 }
 
-async function addModelFiles(modelsFolderPath: fs.PathLike) {
+async function addModelFiles(modelsFolderPath: fs.PathLike, version: string, packageName: string) {
     while (true) {
-        const dbModelName = await vscode.window.showInputBox(newModelInputBoxOptions);
-        if (!dbModelName) {
+        const dbModelNameInPascalCase = await vscode.window.showInputBox(newModelInputBoxOptions);
+        if (!dbModelNameInPascalCase) {
             return;
         }
 
-        const modelData = "//empty model";
+        if (!dbModelNameInPascalCase.match("^[A-Z][A-z0-9]+$")) {
+            showError(new Error('The model name is not validated as PascalCase'), false);
+            continue;
+        }
 
-        if (dbModelName === undefined) {
+        if (dbModelNameInPascalCase === undefined) {
             showInfo('Invalid model name');
             return;
         }
 
-        var dbModelPath = modelsFolderPath + "/" + dbModelName + ".dart";
+        const modelData = getConcreteEntitySkeletonContent(version, packageName, dbModelNameInPascalCase);
+
+        var dbModelPath = modelsFolderPath + "/" + Utils.getUnderscoreCase(dbModelNameInPascalCase) + ".dart";
 
         try {
             await writeFile(dbModelPath, modelData, 'utf8');
