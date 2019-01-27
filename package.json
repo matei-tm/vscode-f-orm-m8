@@ -47,6 +47,7 @@
 		"@types/mocha": "^2.2.42"
 	},
 	"dependencies": {
-		"openurl": "^1.1.1"
+		"openurl": "^1.1.1",
+		"pluralize": "^7.0.0"
 	}
 }
