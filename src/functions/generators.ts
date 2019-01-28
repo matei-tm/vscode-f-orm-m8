@@ -17,7 +17,13 @@ const writeFile = promisify(fs.writeFile);
 
 const newModelInputBoxOptions: vscode.InputBoxOptions = {
     placeHolder: 'YourNewModelName',
-    prompt: 'Input your model name in pascal case (Ex: YourNewModel). Leave empty to end.'
+    prompt: 'Input your model name in pascal case (Ex: YourNewModel). Leave empty to end model generation.',
+    ignoreFocusOut: true,
+    validateInput: (value) => {
+        if (!value.match("^[A-Z][A-z0-9]+$")) {
+            return 'The model name is not validated as PascalCase';
+        }
+    }
 };
 
 export enum InsertionMethod {
@@ -177,11 +183,6 @@ async function addModelFiles(modelsFolderPath: fs.PathLike, version: string, pac
         const dbModelNameInPascalCase = await vscode.window.showInputBox(newModelInputBoxOptions);
         if (!dbModelNameInPascalCase) {
             return;
-        }
-
-        if (!dbModelNameInPascalCase.match("^[A-Z][A-z0-9]+$")) {
-            showError(new Error('The model name is not validated as PascalCase'), false);
-            continue;
         }
 
         if (dbModelNameInPascalCase === undefined) {
