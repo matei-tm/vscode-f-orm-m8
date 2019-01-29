@@ -11,17 +11,18 @@ import getConcreteUserAccountContent from "../templates/models/concrete_user_acc
 import getDatabaseAnnotationsHelper from "../templates/database/database_annotations";
 import getConcreteEntitySkeletonContent from "../templates/models/concrete_entity";
 import { Utils } from "../utils/utils";
+import { ModelsFolderParser } from "../parser/modelsFolderParser";
 
 const mkdir = promisify(fs.mkdir);
 const writeFile = promisify(fs.writeFile);
 
 const newModelInputBoxOptions: vscode.InputBoxOptions = {
     placeHolder: 'YourNewModelName',
-    prompt: 'Input your model name in pascal case (Ex: YourNewModel). Leave empty to end model generation.',
+    prompt: 'Input your model name in pascal case (Ex: YourNewModel).',
     ignoreFocusOut: true,
     validateInput: (value) => {
         if (!value.match("^[A-Z][A-z0-9]+$")) {
-            return 'The model name is not validated as PascalCase';
+            return 'The model name is not validated as PascalCase. Fix the name if you need this model. If you want to exit press ESC. ';
         }
     }
 };
@@ -67,7 +68,7 @@ export async function generateSqliteFixture(extensionContext: vscode.ExtensionCo
     await addDbEntity(helpersDatabaseFolderPath, extensionVersion);
 
     await addUserAccountModelFile(modelsFolderPath, extensionVersion, packageName);
-    await addModelFiles(modelsFolderPath, extensionVersion, packageName);
+    await processModelFiles(modelsFolderPath, extensionVersion, packageName);
 
     showInfo('Flutter: Generate Sqlite Fixture was successful!');
 }
@@ -178,21 +179,35 @@ async function addUserAccountModelFile(modelsFolderPath: fs.PathLike, version: s
     }
 }
 
-async function addModelFiles(modelsFolderPath: fs.PathLike, version: string, packageName: string) {
+async function processModelFiles(modelsFolderPath: fs.PathLike, version: string, packageName: string) {
+
+    var modelsFolderParser: ModelsFolderParser = new ModelsFolderParser(modelsFolderPath);
+    await modelsFolderParser.parseFolderExistingContent();
+
+    var newModelFiles: string[] = await addNewModelFiles(modelsFolderPath, version, packageName);
+    await modelsFolderParser.parseFolderNewContent(newModelFiles);
+}
+
+async function addNewModelFiles(modelsFolderPath: fs.PathLike, version: string, packageName: string): Promise<string[]> {
+    var newModelFiles: string[] = [];
+
     while (true) {
         const dbModelNameInPascalCase = await vscode.window.showInputBox(newModelInputBoxOptions);
         if (!dbModelNameInPascalCase) {
-            return;
+            break;
         }
 
         if (dbModelNameInPascalCase === undefined) {
             showInfo('Invalid model name');
-            return;
+            break;
         }
 
         const modelData = getConcreteEntitySkeletonContent(version, packageName, dbModelNameInPascalCase);
 
-        var dbModelPath = modelsFolderPath + "/" + Utils.getUnderscoreCase(dbModelNameInPascalCase) + ".dart";
+        var modelFileName: string = Utils.getUnderscoreCase(dbModelNameInPascalCase);
+        newModelFiles.push(modelFileName);
+
+        var dbModelPath = modelsFolderPath + "/" + modelFileName + ".dart";
 
         try {
             await writeFile(dbModelPath, modelData, 'utf8');
@@ -201,11 +216,12 @@ async function addModelFiles(modelsFolderPath: fs.PathLike, version: string, pac
         } catch (error) {
             console.log(`Something went wrong. The content file ${dbModelPath} was not created.`);
             showCriticalError(error);
-            return;
+            break;
         }
     }
-}
 
+    return newModelFiles;
+}
 async function addWorkspaceFolder(workspaceFolderPath: fs.PathLike) {
 
     try {
