@@ -17,7 +17,7 @@ export class Utils {
   }
 
   static getUnderscoreCase(entityNameInPascalCase: string): string {
-    return entityNameInPascalCase.replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase();;
+    return entityNameInPascalCase.replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase();
   }
 
   static getUnderscoreCasePlural(entityNameInPascalCase: string): string {
