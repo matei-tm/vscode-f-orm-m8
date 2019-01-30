@@ -11,7 +11,7 @@ import getConcreteUserAccountContent from "../templates/models/concrete_user_acc
 import getDatabaseAnnotationsHelper from "../templates/database/database_annotations";
 import getConcreteEntitySkeletonContent from "../templates/models/concrete_entity";
 import { Utils } from "../utils/utils";
-import { ModelsFolderParser } from "../parser/modelsFolderParser";
+import { ModelsFolderParser } from "../parser/models_folder_parser";
 
 const mkdir = promisify(fs.mkdir);
 const writeFile = promisify(fs.writeFile);

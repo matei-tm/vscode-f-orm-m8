@@ -1,7 +1,7 @@
 import { InsertionMethod } from "../functions/generators";
 import * as vscode from "vscode";
 import { showError, showInfo, showCriticalError } from "../helper/messaging";
-import { PubError } from "../model/pubError";
+import { GenError } from "../model/gen_error";
 
 const sqfliteVersion = '1.0.0';
 export class DependenciesSolver {
@@ -13,7 +13,7 @@ export class DependenciesSolver {
                 .then(doc => vscode.window.showTextDocument(doc));
 
             if (!vscode.window.activeTextEditor || !DependenciesSolver.pubspecFileIsOpen()) {
-                showError(new PubError("Pubspec file not opened."));
+                showError(new GenError("Pubspec file not opened."));
                 return "";
             }
 

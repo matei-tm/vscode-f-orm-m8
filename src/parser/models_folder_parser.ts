@@ -2,7 +2,7 @@ import * as fs from 'fs';
 
 export class ModelsFolderParser {
 
-    modelsFolderPath: fs.PathLike;
+    private modelsFolderPath: fs.PathLike;
 
     constructor(modelsFolderPath: fs.PathLike) {
         this.modelsFolderPath = modelsFolderPath;
