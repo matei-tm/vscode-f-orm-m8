@@ -2,8 +2,10 @@ const pluralize = require("pluralize");
 
 export class Utils {
   static getEntityNamePluralsInPascalCase(entityNameInPascalCase: string): string {
-    var expandWithSpaces = entityNameInPascalCase.replace(/([a-z])([A-Z])/g, '$1 $2');
-    var wordsArray = expandWithSpaces.split(' ');
+    var expandLowerUpperWithSpaces = entityNameInPascalCase.replace(/([a-z])([A-Z])/g, '$1 $2');
+    var expandDigitUpperWithSpaces = expandLowerUpperWithSpaces.replace(/([0-9])([A-Z])/g, '$1 $2');
+
+    var wordsArray = expandDigitUpperWithSpaces.split(' ');
 
     wordsArray[wordsArray.length - 1] = pluralize(wordsArray[wordsArray.length - 1]);
 
@@ -17,11 +19,18 @@ export class Utils {
   }
 
   static getUnderscoreCase(entityNameInPascalCase: string): string {
-    return entityNameInPascalCase.replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase();
+    var expandLowerUpperWithSpaces = entityNameInPascalCase.replace(/([a-z])([A-Z])/g, '$1_$2');
+    var expandDigitUpperWithSpaces = expandLowerUpperWithSpaces.replace(/([0-9])([A-Z])/g, '$1_$2');
+
+    return expandDigitUpperWithSpaces.toLowerCase();
   }
 
   static getUnderscoreCasePlural(entityNameInPascalCase: string): string {
     var entityNamePluralsInPascalCase = Utils.getEntityNamePluralsInPascalCase(entityNameInPascalCase);
-    return entityNamePluralsInPascalCase.replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase();
+
+    var expandLowerUpperWithSpaces = entityNamePluralsInPascalCase.replace(/([a-z])([A-Z])/g, '$1_$2');
+    var expandDigitUpperWithSpaces = expandLowerUpperWithSpaces.replace(/([0-9])([A-Z])/g, '$1_$2');
+    
+    return expandDigitUpperWithSpaces.toLowerCase();
   }
 }
