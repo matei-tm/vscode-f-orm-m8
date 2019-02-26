@@ -1,4 +1,4 @@
-import { InsertionMethod } from "../functions/generators";
+import { InsertionMethod } from "../helper/insertion_method";
 import * as vscode from "vscode";
 import { showError, showInfo, showCriticalError } from "../helper/messaging";
 import { GenError } from "../model/gen_error";

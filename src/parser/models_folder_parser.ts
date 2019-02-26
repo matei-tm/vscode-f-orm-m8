@@ -5,7 +5,7 @@ export class ModelsFolderParser {
 
     private modelsFolderPath: fs.PathLike;
     private existingEntitiesList: string[] = [];
-    private newEntitiesList: string[] = [];
+    //private newEntitiesList: string[] = [];
 
     constructor(modelsFolderPath: fs.PathLike) {
         this.modelsFolderPath = modelsFolderPath;
