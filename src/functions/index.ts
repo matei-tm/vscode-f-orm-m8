@@ -1,3 +1,3 @@
-import generateSqliteFixture from "./generators";
+import { SqliteFixtureGenerator } from "./generators";
 
-export { generateSqliteFixture };
+export { SqliteFixtureGenerator as SqliteFixtureGenerator };

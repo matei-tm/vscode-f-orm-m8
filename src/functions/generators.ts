@@ -32,210 +32,229 @@ export enum InsertionMethod {
     REPLACE = "Replaced"
 }
 
-export default generateSqliteFixture;
+export class SqliteFixtureGenerator {
 
-export async function generateSqliteFixture(extensionContext: vscode.ExtensionContext) {
-    var extensionVersion = getExtensionVersion(extensionContext);
+    private currentFolder: fs.PathLike | undefined;
+    private extensionVersion: any;
 
-    if (extensionVersion === undefined) {
-        return;
+    private helpersFolderPath: fs.PathLike;
+    private helpersDatabaseFolderPath: string;
+    private modelsFolderPath: string;
+
+    private packageName : string = "";
+
+
+    constructor(extensionContext: vscode.ExtensionContext) {
+        this.extensionVersion = this.getExtensionVersion(extensionContext);
+        this.currentFolder = vscode.workspace.rootPath;
+
+        this.helpersFolderPath = this.currentFolder + "/lib/helpers";
+        this.helpersDatabaseFolderPath = this.helpersFolderPath + "/database";
+        this.modelsFolderPath = this.currentFolder + "/lib/models";
+        
     }
 
-    if (!isFlutterProjectOnCurrentFolder()) {
-        return;
-    }
-
-    var currentWorkspace = vscode.workspace;
-    var currentFolder = currentWorkspace.rootPath;
-
-    var packageName = await addOrUpdateDependencyOnSqflite(currentFolder);
-    if (packageName === undefined || packageName === "") {
-        showError(new Error("The package name is missing"), true);
-        return;
-    }
-
-    var helpersFolderPath = currentFolder + "/lib/helpers";
-    var helpersDatabaseFolderPath = helpersFolderPath + "/database";
-    var modelsFolderPath = currentFolder + "/lib/models";
-
-    await addWorkspaceFolder(helpersFolderPath);
-    await addWorkspaceFolder(helpersDatabaseFolderPath);
-    await addWorkspaceFolder(modelsFolderPath);
-
-    await addAbstractDatabaseHelper(helpersDatabaseFolderPath, extensionVersion);
-    await addDatabaseHelper(helpersDatabaseFolderPath, extensionVersion);
-    await addDatabaseAnnotationsMetadata(helpersDatabaseFolderPath, extensionVersion);
-    await addDbEntity(helpersDatabaseFolderPath, extensionVersion);
-
-    await addUserAccountModelFile(modelsFolderPath, extensionVersion, packageName);
-    await processModelFiles(modelsFolderPath, extensionVersion, packageName);
-
-    showInfo('Flutter: Generate Sqlite Fixture was successful!');
-}
-
-function getExtensionVersion(extensionContext: vscode.ExtensionContext): any {
-
-    try {
-        var extensionPath = Path.join(extensionContext.extensionPath, "package.json");
-        var packageFile = JSON.parse(fs.readFileSync(extensionPath, 'utf8'));
-
-        if (packageFile) {
-            return packageFile.version;
-        }
-        else {
-            showError(new Error("The version attribute is missing"), true);
-        }
-    }
-    catch (error) {
-        showCriticalError(error);
-    }
-
-    return undefined;
-}
-
-function isFlutterProjectOnCurrentFolder(): boolean {
-    var currentWorkspace = vscode.workspace;
-
-    if (currentWorkspace === undefined || currentWorkspace.name === undefined) {
-        showError(new Error('A Flutter workspace is not opened in the current session.'), false);
-        return false;
-    }
-
-    var currentFolder = currentWorkspace.rootPath;
-
-    if (currentFolder === undefined) {
-        showError(new Error('A Flutter folder is not opened in the current workspace.'), false);
-        return false;
-    }
-
-    if (!fs.existsSync(currentFolder + "/pubspec.yaml")) {
-        showError(new Error('The current folder is not a Flutter one, or an inner folder is opened. Open the Flutter project root folder.'), false);
-        return false;
-    }
-
-    return true;
-}
-
-async function addOrUpdateDependencyOnSqflite(currentFolder: any): Promise<string> {
-    return DependenciesSolver.solveDependencyOnSqflite(currentFolder);
-}
-
-async function addAbstractDatabaseHelper(helpersDatabaseFolderPath: fs.PathLike, version: string) {
-    const abstractDatabaseHelperContent = getAbstractDatabaseHelper(version);
-
-    var abstractDatabaseHelperFilePath = helpersDatabaseFolderPath + "/abstract_database_helper.dart";
-
-    await addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
-}
-
-async function addDatabaseHelper(helpersDatabaseFolderPath: fs.PathLike, version: string) {
-    const abstractDatabaseHelperContent = getDatabaseHelper(version, "//importsMixinConcatenation", "//mixinHelpersConcatenation", "//createTablesConcatenation");
-
-    var abstractDatabaseHelperFilePath = helpersDatabaseFolderPath + "/database_helper.dart";
-
-    await addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
-}
-
-async function addDatabaseAnnotationsMetadata(helpersDatabaseFolderPath: fs.PathLike, version: string) {
-    const abstractDatabaseHelperContent = getDatabaseAnnotationsHelper(version);
-
-    var abstractDatabaseHelperFilePath = helpersDatabaseFolderPath + "/database_annotations.dart";
-
-    await addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
-}
-
-async function addDbEntity(helpersDatabaseFolderPath: fs.PathLike, version: string) {
-    const abstractDatabaseHelperContent = getDbEntityAbstractContent(version);
-
-    var abstractDatabaseHelperFilePath = helpersDatabaseFolderPath + "/db_entity.dart";
-
-    await addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
-}
-
-async function addFileWithContent(generatedFilePath: string, generatedFileContent: string) {
-    try {
-        await writeFile(generatedFilePath, generatedFileContent, 'utf8');
-        console.log(`The file ${generatedFilePath} was created.`);
-    }
-    catch (error) {
-        console.log(`Something went wrong. The content file ${generatedFilePath} was not created.`);
-        showCriticalError(error);
-    }
-}
-
-async function addUserAccountModelFile(modelsFolderPath: fs.PathLike, version: string, packageName: string) {
-
-    var dbUserAccountModelPath = modelsFolderPath + "/user_account.dart";
-
-    try {
-        var concreteUserAccountContent = getConcreteUserAccountContent(version, packageName);
-        await writeFile(dbUserAccountModelPath, concreteUserAccountContent, 'utf8');
-
-        console.log(`The file ${dbUserAccountModelPath} was created.`);
-    } catch (error) {
-        console.log(`Something went wrong. The content file for ${dbUserAccountModelPath} was not created.`);
-        showCriticalError(error);
-        return;
-    }
-}
-
-async function processModelFiles(modelsFolderPath: fs.PathLike, version: string, packageName: string) {
-
-    var modelsFolderParser: ModelsFolderParser = new ModelsFolderParser(modelsFolderPath);
-    await modelsFolderParser.parseFolderExistingContent();
-
-    var newModelFiles: string[] = await addNewModelFiles(modelsFolderPath, version, packageName);
-    await modelsFolderParser.parseFolderNewContent(newModelFiles);
-}
-
-async function addNewModelFiles(modelsFolderPath: fs.PathLike, version: string, packageName: string): Promise<string[]> {
-    var newModelFiles: string[] = [];
-
-    while (true) {
-        const dbModelNameInPascalCase = await vscode.window.showInputBox(newModelInputBoxOptions);
-        if (!dbModelNameInPascalCase) {
-            break;
-        }
-
-        if (dbModelNameInPascalCase === undefined) {
-            showInfo('Invalid model name');
-            break;
-        }
-
-        const modelData = getConcreteEntitySkeletonContent(version, packageName, dbModelNameInPascalCase);
-
-        var modelFileName: string = Utils.getUnderscoreCase(dbModelNameInPascalCase);
-        newModelFiles.push(modelFileName);
-
-        var dbModelPath = modelsFolderPath + "/" + modelFileName + ".dart";
-
-        try {
-            await writeFile(dbModelPath, modelData, 'utf8');
-
-            console.log(`The file ${dbModelPath} was created.`);
-        } catch (error) {
-            console.log(`Something went wrong. The content file ${dbModelPath} was not created.`);
-            showCriticalError(error);
-            break;
-        }
-    }
-
-    return newModelFiles;
-}
-async function addWorkspaceFolder(workspaceFolderPath: fs.PathLike) {
-
-    try {
-        if (fs.existsSync(workspaceFolderPath)) {
-            console.log(`The folder ${workspaceFolderPath} exists.`);
+    async generateSqliteFixture() {
+        if (this.extensionVersion === undefined) {
             return;
         }
 
-        await mkdir(workspaceFolderPath);
-        console.log(`The folder ${workspaceFolderPath} was created.`);
+        if (!this.isFlutterProjectOnCurrentFolder()) {
+            return;
+        }
 
-    } catch (error) {
-        console.log(`Something went wrong. The folder ${workspaceFolderPath} was not created.`);
-        showCriticalError(error);
-        return;
+        this.packageName = await this.addOrUpdateDependencyOnSqflite();
+        if (this.packageName === undefined || this.packageName === "") {
+            showError(new Error("The package name is missing"), true);
+            return;
+        }
+
+        await this.addWorkspaceFolder(this.helpersFolderPath);
+        await this.addWorkspaceFolder(this.helpersDatabaseFolderPath);
+        await this.addWorkspaceFolder(this.modelsFolderPath);
+
+        await this.addAbstractDatabaseHelper();
+        await this.addDatabaseAnnotationsMetadata();
+        await this.addDbEntity();
+
+        await this.addUserAccountModelFile();
+
+        await this.processModelFiles();
+
+        showInfo('Flutter: Generate Sqlite Fixture was successful!');
+    }
+
+    private getExtensionVersion(extensionContext: vscode.ExtensionContext): any {
+
+        try {
+            var extensionPath = Path.join(extensionContext.extensionPath, "package.json");
+            var packageFile = JSON.parse(fs.readFileSync(extensionPath, 'utf8'));
+
+            if (packageFile) {
+                return packageFile.version;
+            }
+            else {
+                showError(new Error("The version attribute is missing"), true);
+            }
+        }
+        catch (error) {
+            showCriticalError(error);
+        }
+
+        return undefined;
+    }
+
+    private isFlutterProjectOnCurrentFolder(): boolean {
+        var currentWorkspace = vscode.workspace;
+
+        if (currentWorkspace === undefined || currentWorkspace.name === undefined) {
+            showError(new Error('A Flutter workspace is not opened in the current session.'), false);
+            return false;
+        }
+
+        var currentFolder = currentWorkspace.rootPath;
+
+        if (currentFolder === undefined) {
+            showError(new Error('A Flutter folder is not opened in the current workspace.'), false);
+            return false;
+        }
+
+        if (!fs.existsSync(currentFolder + "/pubspec.yaml")) {
+            showError(new Error('The current folder is not a Flutter one, or an inner folder is opened. Open the Flutter project root folder.'), false);
+            return false;
+        }
+
+        return true;
+    }
+
+    async  addOrUpdateDependencyOnSqflite(): Promise<string> {
+        return DependenciesSolver.solveDependencyOnSqflite(this.currentFolder);
+    }
+
+    async  addAbstractDatabaseHelper() {
+        const abstractDatabaseHelperContent = getAbstractDatabaseHelper(this.extensionVersion);
+
+        var abstractDatabaseHelperFilePath = this.helpersDatabaseFolderPath + "/abstract_database_helper.dart";
+
+        await this.addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
+    }
+
+    async  addDatabaseAnnotationsMetadata() {
+        const abstractDatabaseHelperContent = getDatabaseAnnotationsHelper(this.extensionVersion);
+
+        var abstractDatabaseHelperFilePath = this.helpersDatabaseFolderPath + "/database_annotations.dart";
+
+        await this.addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
+    }
+
+    async  addDbEntity() {
+        const abstractDatabaseHelperContent = getDbEntityAbstractContent(this.extensionVersion);
+
+        var abstractDatabaseHelperFilePath = this.helpersDatabaseFolderPath + "/db_entity.dart";
+
+        await this.addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
+    }
+
+    async  addFileWithContent(generatedFilePath: string, generatedFileContent: string) {
+        try {
+            await writeFile(generatedFilePath, generatedFileContent, 'utf8');
+            console.log(`The file ${generatedFilePath} was created.`);
+        }
+        catch (error) {
+            console.log(`Something went wrong. The content file ${generatedFilePath} was not created.`);
+            showCriticalError(error);
+        }
+    }
+
+    async addUserAccountModelFile() {
+
+        var dbUserAccountModelPath = this.modelsFolderPath + "/user_account.dart";
+
+        try {
+            var concreteUserAccountContent = getConcreteUserAccountContent(this.extensionVersion, this.packageName);
+            await writeFile(dbUserAccountModelPath, concreteUserAccountContent, 'utf8');
+
+            console.log(`The file ${dbUserAccountModelPath} was created.`);
+        } catch (error) {
+            console.log(`Something went wrong. The content file for ${dbUserAccountModelPath} was not created.`);
+            showCriticalError(error);
+            return;
+        }
+    }
+
+    async processModelFiles() {
+
+        var modelsFolderParser: ModelsFolderParser = new ModelsFolderParser(this.modelsFolderPath);
+        var existingModelsList = await modelsFolderParser.parseFolderExistingContent();
+
+        var newModelsList: string[] = await this.addNewModelFiles();
+        
+        await modelsFolderParser.parseFolderNewContent(newModelsList);
+    }
+    
+    async  addDatabaseHelper(modelsList: string[]) {
+
+        const abstractDatabaseHelperContent = getDatabaseHelper(
+            this.extensionVersion,
+            "//importsMixinConcatenation",
+            "//mixinHelpersConcatenation",
+            "//createTablesConcatenation",
+            "//deleteEntitiesDataConcatenation");
+
+        var abstractDatabaseHelperFilePath = this.helpersDatabaseFolderPath + "/database_helper.dart";
+
+        await this.addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
+    }
+
+    async addNewModelFiles(): Promise<string[]> {
+        var newModelsList: string[] = [];
+
+        while (true) {
+            const dbModelNameInPascalCase = await vscode.window.showInputBox(newModelInputBoxOptions);
+            if (!dbModelNameInPascalCase) {
+                break;
+            }
+
+            if (dbModelNameInPascalCase === undefined) {
+                showInfo('Invalid model name');
+                break;
+            }
+
+            const modelData = getConcreteEntitySkeletonContent(this.extensionVersion, this.packageName, dbModelNameInPascalCase);
+
+            var modelFileName: string = Utils.getUnderscoreCase(dbModelNameInPascalCase);
+            newModelsList.push(modelFileName);
+
+            var dbModelPath = this.modelsFolderPath + "/" + modelFileName + ".dart";
+
+            try {
+                await writeFile(dbModelPath, modelData, 'utf8');
+
+                console.log(`The file ${dbModelPath} was created.`);
+            } catch (error) {
+                console.log(`Something went wrong. The content file ${dbModelPath} was not created.`);
+                showCriticalError(error);
+                break;
+            }
+        }
+
+        return newModelsList;
+    }
+    async addWorkspaceFolder(workspaceFolderPath: fs.PathLike) {
+
+        try {
+            if (fs.existsSync(workspaceFolderPath)) {
+                console.log(`The folder ${workspaceFolderPath} exists.`);
+                return;
+            }
+
+            await mkdir(workspaceFolderPath);
+            console.log(`The folder ${workspaceFolderPath} was created.`);
+
+        } catch (error) {
+            console.log(`Something went wrong. The folder ${workspaceFolderPath} was not created.`);
+            showCriticalError(error);
+            return;
+        }
     }
 }
