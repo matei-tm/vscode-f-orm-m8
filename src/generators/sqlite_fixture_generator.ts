@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import getAbstractDatabaseHelper from '../templates/database/abstract_database_helper';
 import { DependenciesSolver } from "../utils/dependencies_solver";
 import { showError, showInfo, showCriticalError } from "../helper/messaging";
-import getDatabaseHelper from "../templates/database/database_helper";
+
 import getDbEntityAbstractContent from "../templates/database/db_entity";
 import * as Path from 'path';
 import getConcreteUserAccountContent from "../templates/models/concrete_user_account";
@@ -12,8 +12,10 @@ import getDatabaseAnnotationsHelper from "../templates/database/database_annotat
 import getConcreteEntitySkeletonContent from "../templates/models/concrete_entity";
 import { Utils } from "../utils/utils";
 import { ModelsFolderParser } from "../parser/models_folder_parser";
+import { FileManager } from "./file_manager";
+import { FolderManager } from "./folder_manager";
 
-const mkdir = promisify(fs.mkdir);
+
 const writeFile = promisify(fs.writeFile);
 
 const newModelInputBoxOptions: vscode.InputBoxOptions = {
@@ -36,8 +38,7 @@ export class SqliteFixtureGenerator {
     private helpersDatabaseFolderPath: string;
     private modelsFolderPath: string;
 
-    private packageName : string = "";
-
+    private packageName: string = "";
 
     constructor(extensionContext: vscode.ExtensionContext) {
         this.extensionVersion = this.getExtensionVersion(extensionContext);
@@ -46,7 +47,6 @@ export class SqliteFixtureGenerator {
         this.helpersFolderPath = this.currentFolder + "/lib/helpers";
         this.helpersDatabaseFolderPath = this.helpersFolderPath + "/database";
         this.modelsFolderPath = this.currentFolder + "/lib/models";
-        
     }
 
     async generateSqliteFixture() {
@@ -64,9 +64,9 @@ export class SqliteFixtureGenerator {
             return;
         }
 
-        await this.addWorkspaceFolder(this.helpersFolderPath);
-        await this.addWorkspaceFolder(this.helpersDatabaseFolderPath);
-        await this.addWorkspaceFolder(this.modelsFolderPath);
+        await FolderManager.addWorkspaceFolder(this.helpersFolderPath);
+        await FolderManager.addWorkspaceFolder(this.helpersDatabaseFolderPath);
+        await FolderManager.addWorkspaceFolder(this.modelsFolderPath);
 
         await this.addAbstractDatabaseHelper();
         await this.addDatabaseAnnotationsMetadata();
@@ -131,7 +131,7 @@ export class SqliteFixtureGenerator {
 
         var abstractDatabaseHelperFilePath = this.helpersDatabaseFolderPath + "/abstract_database_helper.dart";
 
-        await this.addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
+        await FileManager.addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
     }
 
     async  addDatabaseAnnotationsMetadata() {
@@ -139,7 +139,7 @@ export class SqliteFixtureGenerator {
 
         var abstractDatabaseHelperFilePath = this.helpersDatabaseFolderPath + "/database_annotations.dart";
 
-        await this.addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
+        await FileManager.addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
     }
 
     async  addDbEntity() {
@@ -147,18 +147,7 @@ export class SqliteFixtureGenerator {
 
         var abstractDatabaseHelperFilePath = this.helpersDatabaseFolderPath + "/db_entity.dart";
 
-        await this.addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
-    }
-
-    async  addFileWithContent(generatedFilePath: string, generatedFileContent: string) {
-        try {
-            await writeFile(generatedFilePath, generatedFileContent, 'utf8');
-            console.log(`The file ${generatedFilePath} was created.`);
-        }
-        catch (error) {
-            console.log(`Something went wrong. The content file ${generatedFilePath} was not created.`);
-            showCriticalError(error);
-        }
+        await FileManager.addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
     }
 
     async addUserAccountModelFile() {
@@ -183,23 +172,9 @@ export class SqliteFixtureGenerator {
         var existingModelsList = await modelsFolderParser.parseFolderExistingContent();
 
         var newModelsList: string[] = await this.addNewModelFiles();
-        
+
         await modelsFolderParser.parseFolderNewContent(newModelsList);
-    }
-    
-    async  addDatabaseHelper(modelsList: string[]) {
-
-        const abstractDatabaseHelperContent = getDatabaseHelper(
-            this.extensionVersion,
-            "//importsMixinConcatenation",
-            "//mixinHelpersConcatenation",
-            "//createTablesConcatenation",
-            "//deleteEntitiesDataConcatenation");
-
-        var abstractDatabaseHelperFilePath = this.helpersDatabaseFolderPath + "/database_helper.dart";
-
-        await this.addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
-    }
+    }    
 
     async addNewModelFiles(): Promise<string[]> {
         var newModelsList: string[] = [];
@@ -235,21 +210,6 @@ export class SqliteFixtureGenerator {
 
         return newModelsList;
     }
-    async addWorkspaceFolder(workspaceFolderPath: fs.PathLike) {
 
-        try {
-            if (fs.existsSync(workspaceFolderPath)) {
-                console.log(`The folder ${workspaceFolderPath} exists.`);
-                return;
-            }
 
-            await mkdir(workspaceFolderPath);
-            console.log(`The folder ${workspaceFolderPath} was created.`);
-
-        } catch (error) {
-            console.log(`Something went wrong. The folder ${workspaceFolderPath} was not created.`);
-            showCriticalError(error);
-            return;
-        }
-    }
 }
