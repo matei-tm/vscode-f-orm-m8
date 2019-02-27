@@ -15,7 +15,7 @@ export class Utils {
   }
 
   static getEntityNameInCamelCase(entityNameInPascalCase: string): string {
-    return entityNameInPascalCase.substr(0, 1).toUpperCase() + entityNameInPascalCase.substr(1);
+    return entityNameInPascalCase.substr(0, 1).toLowerCase() + entityNameInPascalCase.substr(1);
   }
 
   static getUnderscoreCase(entityNameInPascalCase: string): string {

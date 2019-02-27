@@ -168,22 +168,22 @@ export class SqliteFixtureGenerator {
     }    
 
     private async processModelFiles() {
+        var databaseHelpersGenerator = new DatabaseHelpersGenerator(this.helpersDatabaseFolderPath, this.packageName, this.extensionVersion);
 
-        var modelsFolderParser: ModelsFolderParser = new ModelsFolderParser(this.modelsFolderPath);
+        var modelsFolderParser: ModelsFolderParser = new ModelsFolderParser(this.modelsFolderPath, databaseHelpersGenerator);
         var existingModelsList = await modelsFolderParser.parseFolderExistingContent();
 
-        var newModelsNameInPascalCaseList: string[] = await this.addNewModelFiles();
-
-        var databaseHelpersGenerator = new DatabaseHelpersGenerator(this.helpersDatabaseFolderPath, this.packageName, this.extensionVersion);
+        var newModelsNameInPascalCaseList: string[] = await this.addNewModelFiles(databaseHelpersGenerator);        
 
         var allModelsList = newModelsNameInPascalCaseList.concat(existingModelsList);
         
         databaseHelpersGenerator.addUserAccountDatabaseHelper();
+        
         databaseHelpersGenerator.addDatabaseHelper(allModelsList);
 
     }
 
-    private async addNewModelFiles(): Promise<string[]> {
+    private async addNewModelFiles(databaseHelpersGenerator : DatabaseHelpersGenerator): Promise<string[]> {
         var newModelsNameInPascalCaseList: string[] = [];
 
         while (true) {
@@ -198,6 +198,7 @@ export class SqliteFixtureGenerator {
             }
 
             newModelsNameInPascalCaseList.push(dbModelNameInPascalCase);
+            databaseHelpersGenerator.addConcreteEntityDatabaseHelper(dbModelNameInPascalCase);
 
             const modelData = getConcreteEntitySkeletonContent(this.extensionVersion, this.packageName, dbModelNameInPascalCase);
 

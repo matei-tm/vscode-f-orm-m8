@@ -4,6 +4,7 @@ import getDatabaseHelper from "../templates/database/database_helper";
 import { FileManager } from './file_manager';
 import { Utils } from '../utils/utils';
 import getUserAccountDatabaseHelper from '../templates/database/user_account_database_helper';
+import getConcreteEntityDatabaseHelper from '../templates/database/concrete_entity_database_helper';
 export class DatabaseHelpersGenerator {
     private helpersDatabaseFolderPath: fs.PathLike;
     private extensionVersion: string;
@@ -16,9 +17,14 @@ export class DatabaseHelpersGenerator {
     }
 
     async addUserAccountDatabaseHelper() {
-        var userAccountDatabaseHelperFilePath = this.helpersDatabaseFolderPath + "/user_account_database_helper.dart";
-        var userAccountDatabaseHelperContent = getUserAccountDatabaseHelper(this.extensionVersion, this.packageName);
-        await FileManager.addFileWithContent(userAccountDatabaseHelperFilePath, userAccountDatabaseHelperContent);
+
+    }
+
+    async addConcreteEntityDatabaseHelper(modelNameInPascalCase: string){
+        var modelNameInUnderscoreCase = Utils.getUnderscoreCase(modelNameInPascalCase);
+        var concreteEntityDatabaseHelperFilePath = this.helpersDatabaseFolderPath + `/${modelNameInUnderscoreCase}_database_helper.dart`;
+        var concreteEntityDatabaseHelperContent = getConcreteEntityDatabaseHelper(this.extensionVersion, this.packageName, modelNameInPascalCase, "");
+        await FileManager.addFileWithContent(concreteEntityDatabaseHelperFilePath, concreteEntityDatabaseHelperContent);
     }
 
     async  addDatabaseHelper(modelsList: string[]) {
