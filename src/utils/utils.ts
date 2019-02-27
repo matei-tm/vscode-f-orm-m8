@@ -15,7 +15,7 @@ export class Utils {
   }
 
   static getEntityNameInCamelCase(entityNameInPascalCase: string): string {
-    return entityNameInPascalCase.substr(0, 1).toUpperCase() + entityNameInPascalCase.substr(1);
+    return entityNameInPascalCase.substr(0, 1).toLowerCase() + entityNameInPascalCase.substr(1);
   }
 
   static getUnderscoreCase(entityNameInPascalCase: string): string {
@@ -25,12 +25,18 @@ export class Utils {
     return expandDigitUpperWithSpaces.toLowerCase();
   }
 
+  static getEntityNameInPascalCase(entityNameInUnderscoreCase: string) {
+    var entityNameInPascalCase = entityNameInUnderscoreCase.split("_").map((slice)=> slice.substr(0, 1).toUpperCase() + slice.substr(1)).join("");
+
+    return entityNameInPascalCase;
+  }
+
   static getUnderscoreCasePlural(entityNameInPascalCase: string): string {
     var entityNamePluralsInPascalCase = Utils.getEntityNamePluralsInPascalCase(entityNameInPascalCase);
 
     var expandLowerUpperWithSpaces = entityNamePluralsInPascalCase.replace(/([a-z])([A-Z])/g, '$1_$2');
     var expandDigitUpperWithSpaces = expandLowerUpperWithSpaces.replace(/([0-9])([A-Z])/g, '$1_$2');
-    
+
     return expandDigitUpperWithSpaces.toLowerCase();
   }
 }
