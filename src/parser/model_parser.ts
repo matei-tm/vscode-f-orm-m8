@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { Utils } from '../utils/utils';
 
 export class ModelParser {
     private modelsFolderPath: fs.PathLike;
@@ -19,9 +20,10 @@ export class ModelParser {
 
     async getModelName(): Promise<string> {
         if (this.modelFileName === null) {
-           await this.initialize();
+            await this.initialize();
         }
 
-        return this.modelFileName;
+        var modelFileNameWithoutExtension = this.modelFileName.replace(".dart", "");
+        return Utils.getEntityNameInPascalCase(modelFileNameWithoutExtension);
     }
 }

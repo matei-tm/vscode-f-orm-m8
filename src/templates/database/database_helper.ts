@@ -46,14 +46,14 @@ class DatabaseHelper ${mixinHelpersConcatenation}
 
   initDb() async {
     String databasesPath = await getDatabasesPath();
-    String path = join(databasesPath, 'emer_store_10.db');
+    String path = join(databasesPath, 'sqlite_store_10.db');
 
     var db = await openDatabase(path, version: 2, onCreate: _onCreate);
     return db;
   }
 
   void _onCreate(Database db, int newVersion) async {
-    ${createTablesConcatenation}
+${createTablesConcatenation}
   }
 
   Future close() async {
@@ -62,7 +62,7 @@ class DatabaseHelper ${mixinHelpersConcatenation}
   }
 
   Future deleteAll() async {
-    ${deleteAllConcatenation}
+${deleteAllConcatenation}
   }
 }
 `;

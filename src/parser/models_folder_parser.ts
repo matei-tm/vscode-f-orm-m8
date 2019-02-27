@@ -5,7 +5,6 @@ export class ModelsFolderParser {
 
     private modelsFolderPath: fs.PathLike;
     private existingEntitiesList: string[] = [];
-    //private newEntitiesList: string[] = [];
 
     constructor(modelsFolderPath: fs.PathLike) {
         this.modelsFolderPath = modelsFolderPath;
@@ -20,13 +19,6 @@ export class ModelsFolderParser {
         });
 
         return this.existingEntitiesList;
-    }
-
-    async parseFolderNewContent(newModelFiles: string[]) {
-        console.log("Start parsing new models:");
-        newModelFiles.forEach(async (file) => {
-            await this.processModelFile(file);
-        });
     }
 
     private async processModelFile(file: string) {

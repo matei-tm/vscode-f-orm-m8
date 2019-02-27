@@ -14,6 +14,7 @@ import { Utils } from "../utils/utils";
 import { ModelsFolderParser } from "../parser/models_folder_parser";
 import { FileManager } from "./file_manager";
 import { FolderManager } from "./folder_manager";
+import { DatabaseHelpersGenerator } from "./database_helpers_generator";
 
 
 const writeFile = promisify(fs.writeFile);
@@ -122,11 +123,11 @@ export class SqliteFixtureGenerator {
         return true;
     }
 
-    async  addOrUpdateDependencyOnSqflite(): Promise<string> {
+    private async  addOrUpdateDependencyOnSqflite(): Promise<string> {
         return DependenciesSolver.solveDependencyOnSqflite(this.currentFolder);
     }
 
-    async  addAbstractDatabaseHelper() {
+    private async  addAbstractDatabaseHelper() {
         const abstractDatabaseHelperContent = getAbstractDatabaseHelper(this.extensionVersion);
 
         var abstractDatabaseHelperFilePath = this.helpersDatabaseFolderPath + "/abstract_database_helper.dart";
@@ -134,7 +135,7 @@ export class SqliteFixtureGenerator {
         await FileManager.addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
     }
 
-    async  addDatabaseAnnotationsMetadata() {
+    private async  addDatabaseAnnotationsMetadata() {
         const abstractDatabaseHelperContent = getDatabaseAnnotationsHelper(this.extensionVersion);
 
         var abstractDatabaseHelperFilePath = this.helpersDatabaseFolderPath + "/database_annotations.dart";
@@ -142,7 +143,7 @@ export class SqliteFixtureGenerator {
         await FileManager.addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
     }
 
-    async  addDbEntity() {
+    private async  addDbEntity() {
         const abstractDatabaseHelperContent = getDbEntityAbstractContent(this.extensionVersion);
 
         var abstractDatabaseHelperFilePath = this.helpersDatabaseFolderPath + "/db_entity.dart";
@@ -150,7 +151,7 @@ export class SqliteFixtureGenerator {
         await FileManager.addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
     }
 
-    async addUserAccountModelFile() {
+    private async addUserAccountModelFile() {
 
         var dbUserAccountModelPath = this.modelsFolderPath + "/user_account.dart";
 
@@ -164,20 +165,26 @@ export class SqliteFixtureGenerator {
             showCriticalError(error);
             return;
         }
-    }
+    }    
 
-    async processModelFiles() {
+    private async processModelFiles() {
 
         var modelsFolderParser: ModelsFolderParser = new ModelsFolderParser(this.modelsFolderPath);
         var existingModelsList = await modelsFolderParser.parseFolderExistingContent();
 
-        var newModelsList: string[] = await this.addNewModelFiles();
+        var newModelsNameInPascalCaseList: string[] = await this.addNewModelFiles();
 
-        await modelsFolderParser.parseFolderNewContent(newModelsList);
-    }    
+        var databaseHelpersGenerator = new DatabaseHelpersGenerator(this.helpersDatabaseFolderPath, this.packageName, this.extensionVersion);
 
-    async addNewModelFiles(): Promise<string[]> {
-        var newModelsList: string[] = [];
+        var allModelsList = newModelsNameInPascalCaseList.concat(existingModelsList);
+        
+        databaseHelpersGenerator.addUserAccountDatabaseHelper();
+        databaseHelpersGenerator.addDatabaseHelper(allModelsList);
+
+    }
+
+    private async addNewModelFiles(): Promise<string[]> {
+        var newModelsNameInPascalCaseList: string[] = [];
 
         while (true) {
             const dbModelNameInPascalCase = await vscode.window.showInputBox(newModelInputBoxOptions);
@@ -190,11 +197,11 @@ export class SqliteFixtureGenerator {
                 break;
             }
 
+            newModelsNameInPascalCaseList.push(dbModelNameInPascalCase);
+
             const modelData = getConcreteEntitySkeletonContent(this.extensionVersion, this.packageName, dbModelNameInPascalCase);
 
             var modelFileName: string = Utils.getUnderscoreCase(dbModelNameInPascalCase);
-            newModelsList.push(modelFileName);
-
             var dbModelPath = this.modelsFolderPath + "/" + modelFileName + ".dart";
 
             try {
@@ -208,8 +215,6 @@ export class SqliteFixtureGenerator {
             }
         }
 
-        return newModelsList;
+        return newModelsNameInPascalCaseList;
     }
-
-
 }

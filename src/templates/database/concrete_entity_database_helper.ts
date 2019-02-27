@@ -5,11 +5,9 @@ import getHeadingWarning from "../heading_warning";
  * Generates the content for the /helpers/database/database_helper.dart file
  * Returns a string with the content
  *
+ * @param version: string,
  * @param packageName: string, 
  * @param entityNameInPascalCase: string, 
- * @param entityNameInUnderscoreCase: string,
- * @param entityNameInCamelCase: string,
- * @param entityNamePluralsInPascalCase: string,
  * @param tableColumnsDefinitionConcatenation: string
 */
 
