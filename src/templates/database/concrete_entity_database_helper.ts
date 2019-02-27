@@ -32,6 +32,7 @@ import 'package:${packageName}/models/${entityNameInUnderscoreCase}.dart';
 mixin ${entityNameInPascalCase}DatabaseHelper implements AbstractDatabaseHelper {
   Future<Database> db;
   final String columnId = 'id';
+  final ${entityNameInCamelCase}Columns = ["id", "account_id", "record_date", "is_deleted" /*, "entry_name"*/];
 
   final String _${entityNameInCamelCase}Table = '${entityNameInCamelCase}';
 
@@ -50,7 +51,7 @@ mixin ${entityNameInPascalCase}DatabaseHelper implements AbstractDatabaseHelper 
   Future<List> get${entityNamePluralsInPascalCase}All() async {
     var dbClient = await db;
     var result =
-        await dbClient.query(_${entityNameInCamelCase}Table, columns: ${entityNameInPascalCase}.columns, where: 'is_deleted != 1');
+        await dbClient.query(_${entityNameInCamelCase}Table, columns: ${entityNameInCamelCase}Columns, where: 'is_deleted != 1');
 
     return result.toList();
   }
@@ -58,7 +59,7 @@ mixin ${entityNameInPascalCase}DatabaseHelper implements AbstractDatabaseHelper 
   Future<List> get${entityNamePluralsInPascalCase}ByAccountId(int accountId) async {
     var dbClient = await db;
     var result = await dbClient.query(_${entityNameInCamelCase}Table,
-        columns: ${entityNameInPascalCase}.columns,
+        columns: ${entityNameInCamelCase}Columns,
         where: 'account_id = ? AND is_deleted != 1',
         whereArgs: [accountId]);
 
@@ -74,7 +75,7 @@ mixin ${entityNameInPascalCase}DatabaseHelper implements AbstractDatabaseHelper 
   Future<${entityNameInPascalCase}> get${entityNameInPascalCase}(int id) async {
     var dbClient = await db;
     List<Map> result = await dbClient.query(_${entityNameInCamelCase}Table,
-        columns: ${entityNameInPascalCase}.columns, where: '$columnId = ?  AND is_deleted != 1', whereArgs: [id]);
+        columns: ${entityNameInCamelCase}Columns, where: '$columnId = ?  AND is_deleted != 1', whereArgs: [id]);
 
     if (result.length > 0) {
       return ${entityNameInPascalCase}.fromMap(result.first);

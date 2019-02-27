@@ -17,10 +17,12 @@ export class DatabaseHelpersGenerator {
     }
 
     async addUserAccountDatabaseHelper() {
-
+        var userAccountDatabaseHelperFilePath = this.helpersDatabaseFolderPath + "/user_account_database_helper.dart";
+        var userAccountDatabaseHelperContent = getUserAccountDatabaseHelper(this.extensionVersion, this.packageName);
+        await FileManager.addFileWithContent(userAccountDatabaseHelperFilePath, userAccountDatabaseHelperContent);
     }
 
-    async addConcreteEntityDatabaseHelper(modelNameInPascalCase: string){
+    async addConcreteEntityDatabaseHelper(modelNameInPascalCase: string) {
         var modelNameInUnderscoreCase = Utils.getUnderscoreCase(modelNameInPascalCase);
         var concreteEntityDatabaseHelperFilePath = this.helpersDatabaseFolderPath + `/${modelNameInUnderscoreCase}_database_helper.dart`;
         var concreteEntityDatabaseHelperContent = getConcreteEntityDatabaseHelper(this.extensionVersion, this.packageName, modelNameInPascalCase, "");

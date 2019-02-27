@@ -41,9 +41,7 @@ class ${entityNameInPascalCase} implements DbAccountRelatedEntity {
   int _isDeleted;
 
   /*String _entryName;*/
-
-  static final columns = ["id", "account_id", "record_date", "is_deleted" /*, "entry_name"*/];
-
+  
   ${entityNameInPascalCase}(this._recordDate, this._accountId, /*this._entryName*/);
 
   ${entityNameInPascalCase}.empty() {

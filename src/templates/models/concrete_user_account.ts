@@ -25,14 +25,7 @@ class UserAccount implements DbAccountEntity {
   String _accountEmail;
 
   @DataColumn("account_abbr", ColumnMetadata.NotNull)
-  String _accountAbbr;
-
-  static final List<String> columns = [
-    "id",
-    "account_name",
-    "account_email",
-    "account_abbr"
-  ];
+  String _accountAbbr;  
 
   UserAccount(this._accountName, this._accountEmail, this._accountAbbr);
 
