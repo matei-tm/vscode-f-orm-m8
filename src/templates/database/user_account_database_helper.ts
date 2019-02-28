@@ -23,6 +23,13 @@ mixin UserAccountDatabaseHelper implements AbstractDatabaseHelper {
   Future<Database> db;
   final String columnId = 'id';
 
+  final List<String> userAccountColumns = [
+    "id",
+    "account_name",
+    "account_email",
+    "account_abbr"
+  ];
+
   String _userAccountTable = 'userAccount';
 
   Future createUserAccountTable(Database db) async {
@@ -39,7 +46,7 @@ mixin UserAccountDatabaseHelper implements AbstractDatabaseHelper {
   Future<List> getUserAccountsAll() async {
     var dbClient = await db;
     var result =
-        await dbClient.query(_userAccountTable, columns: UserAccount.columns, where: 'is_deleted != 1');
+        await dbClient.query(_userAccountTable, columns: userAccountColumns, where: 'is_deleted != 1');
 
     return result.toList();
   }
@@ -47,7 +54,7 @@ mixin UserAccountDatabaseHelper implements AbstractDatabaseHelper {
   Future<List> getUserAccountsAllOther(int id) async {
     var dbClient = await db;
     var result = await dbClient.query(_userAccountTable,
-        columns: UserAccount.columns, where: '$columnId != ? AND is_deleted != 1', whereArgs: [id]);
+        columns: userAccountColumns, where: '$columnId != ? AND is_deleted != 1', whereArgs: [id]);
 
     return result.toList();
   }
@@ -61,7 +68,7 @@ mixin UserAccountDatabaseHelper implements AbstractDatabaseHelper {
   Future<UserAccount> getUserAccount(int id) async {
     var dbClient = await db;
     List<Map> result = await dbClient.query(_userAccountTable,
-        columns: UserAccount.columns, where: '$columnId = ? AND is_deleted != 1', whereArgs: [id]);
+        columns: userAccountColumns, where: '$columnId = ? AND is_deleted != 1', whereArgs: [id]);
 
     if (result.length > 0) {
       return UserAccount.fromMap(result.first);
@@ -73,7 +80,7 @@ mixin UserAccountDatabaseHelper implements AbstractDatabaseHelper {
   Future<UserAccount> getUserAccountByEmail(String email) async {
     var dbClient = await db;
     List<Map> result = await dbClient.query(_userAccountTable,
-        columns: UserAccount.columns,
+        columns: userAccountColumns,
         where: 'account_email = ?  AND is_deleted != 1',
         whereArgs: [email]);
 

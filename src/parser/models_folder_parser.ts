@@ -1,42 +1,60 @@
 import * as fs from 'fs';
 import { ModelParser } from './model_parser';
 import { DatabaseHelpersGenerator } from '../generators/database_helpers_generator';
+import { FolderManager } from '../generators/folder_manager';
 
 export class ModelsFolderParser {
 
-    private modelsFolderPath: fs.PathLike;
-    private existingEntitiesList: string[] = [];
+    private folderManager: FolderManager;
+    private existingAccountRelatedEntitiesList: string[] = [];
+    private existingIndependentEntitiesList: string[] = [];
     private databaseHelperGenerator: DatabaseHelpersGenerator;
 
-    constructor(modelsFolderPath: fs.PathLike, databaseHelpersGenerator: DatabaseHelpersGenerator) {
-        this.modelsFolderPath = modelsFolderPath;
+    constructor(folderManager: FolderManager, databaseHelpersGenerator: DatabaseHelpersGenerator) {
+        this.folderManager = folderManager;
         this.databaseHelperGenerator = databaseHelpersGenerator;
     }
 
-    async parseFolderExistingContent(): Promise<string[]> {
-        console.log("Start parsing existing models:");
-        fs.readdir(this.modelsFolderPath, (err, files) => {
+    async parseAccountRelatedFolderExistingContent(): Promise<string[]> {
+        console.log("Start parsing existing account related models:");
+        fs.readdir(this.folderManager.independentModelsFolderPath, (err, files) => {
             files.map(async (file) => {
-                await this.processModelFile(file);
+                await this.processAccountRelatedModelFile(file);
             });
         });
 
-        return this.existingEntitiesList;
+        return this.existingAccountRelatedEntitiesList;
     }
 
-    private async processModelFile(file: string) {
-        var modelParser: ModelParser = new ModelParser(this.modelsFolderPath, file);
+    private async processAccountRelatedModelFile(file: string) {
+        var modelParser: ModelParser = new ModelParser(this.folderManager.accountRelatedModelsFolderPath, file);
+        var modelName: string = await modelParser.getModelName();
+        console.log(file);
+
+        this.databaseHelperGenerator.addConcreteAccountRelatedEntityDatabaseHelper(modelName);
+
+        this.existingAccountRelatedEntitiesList.push(modelName);
+    }
+
+    async parseIndependentFolderExistingContent(): Promise<string[]> {
+        console.log("Start parsing existing independent models:");
+        fs.readdir(this.folderManager.independentModelsFolderPath, (err, files) => {
+            files.map(async (file) => {
+                await this.processIndependentModelFile(file);
+            });
+        });
+
+        return this.existingIndependentEntitiesList;
+    }
+
+    private async processIndependentModelFile(file: string) {
+        var modelParser: ModelParser = new ModelParser(this.folderManager.independentModelsFolderPath, file);
         var modelName: string = await modelParser.getModelName();
         console.log(file);
 
         //todo deep analisys of decorators
-        if (modelName !== "UserAccount") {
-            this.databaseHelperGenerator.addConcreteEntityDatabaseHelper(modelName);
-        }
-        this.existingEntitiesList.push(modelName);
-    }
+        this.databaseHelperGenerator.addConcreteAccountRelatedEntityDatabaseHelper(modelName);
 
-    patchDatabaseHelperWithMixins() {
-
+        this.existingIndependentEntitiesList.push(modelName);
     }
 }

@@ -9,19 +9,31 @@ import getDbEntityAbstractContent from "../templates/database/db_entity";
 import * as Path from 'path';
 import getConcreteUserAccountContent from "../templates/models/concrete_user_account";
 import getDatabaseAnnotationsHelper from "../templates/database/database_annotations";
-import getConcreteEntitySkeletonContent from "../templates/models/concrete_entity";
+import getConcreteAccountRelatedEntitySkeletonContent from "../templates/models/concrete_account_related_entity";
 import { Utils } from "../utils/utils";
 import { ModelsFolderParser } from "../parser/models_folder_parser";
 import { FileManager } from "./file_manager";
 import { FolderManager } from "./folder_manager";
 import { DatabaseHelpersGenerator } from "./database_helpers_generator";
+import getConcreteIndependentEntitySkeletonContent from "../templates/models/concrete_independent_entity";
 
 
 const writeFile = promisify(fs.writeFile);
 
-const newModelInputBoxOptions: vscode.InputBoxOptions = {
+const newIndependentModelInputBoxOptions: vscode.InputBoxOptions = {
     placeHolder: 'YourNewModelName',
-    prompt: 'Input your model name in pascal case (Ex: YourNewModel).',
+    prompt: 'Input your INDEPENDENT model name in pascal case (Ex: YourNewModel).',
+    ignoreFocusOut: true,
+    validateInput: (value) => {
+        if (!value.match("^[A-Z][A-z0-9]+$")) {
+            return 'The model name is not validated as PascalCase. Fix the name if you need this model. If you want to exit press ESC. ';
+        }
+    }
+};
+
+const newAccountRelatedModelInputBoxOptions: vscode.InputBoxOptions = {
+    placeHolder: 'YourNewModelName',
+    prompt: 'Input your ACCOUNT RELATED model name in pascal case (Ex: YourNewModel).',
     ignoreFocusOut: true,
     validateInput: (value) => {
         if (!value.match("^[A-Z][A-z0-9]+$")) {
@@ -35,19 +47,14 @@ export class SqliteFixtureGenerator {
     private currentFolder: fs.PathLike | undefined;
     private extensionVersion: any;
 
-    private helpersFolderPath: fs.PathLike;
-    private helpersDatabaseFolderPath: string;
-    private modelsFolderPath: string;
-
     private packageName: string = "";
+    private folderManager: FolderManager;
 
     constructor(extensionContext: vscode.ExtensionContext) {
         this.extensionVersion = this.getExtensionVersion(extensionContext);
         this.currentFolder = vscode.workspace.rootPath;
 
-        this.helpersFolderPath = this.currentFolder + "/lib/helpers";
-        this.helpersDatabaseFolderPath = this.helpersFolderPath + "/database";
-        this.modelsFolderPath = this.currentFolder + "/lib/models";
+        this.folderManager = new FolderManager(this.currentFolder);
     }
 
     async generateSqliteFixture() {
@@ -64,10 +71,6 @@ export class SqliteFixtureGenerator {
             showError(new Error("The package name is missing"), true);
             return;
         }
-
-        await FolderManager.addWorkspaceFolder(this.helpersFolderPath);
-        await FolderManager.addWorkspaceFolder(this.helpersDatabaseFolderPath);
-        await FolderManager.addWorkspaceFolder(this.modelsFolderPath);
 
         await this.addAbstractDatabaseHelper();
         await this.addDatabaseAnnotationsMetadata();
@@ -130,7 +133,7 @@ export class SqliteFixtureGenerator {
     private async  addAbstractDatabaseHelper() {
         const abstractDatabaseHelperContent = getAbstractDatabaseHelper(this.extensionVersion);
 
-        var abstractDatabaseHelperFilePath = this.helpersDatabaseFolderPath + "/abstract_database_helper.dart";
+        var abstractDatabaseHelperFilePath = Path.join(this.folderManager.helpersDatabaseFolderPath, "abstract_database_helper.dart");
 
         await FileManager.addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
     }
@@ -138,7 +141,7 @@ export class SqliteFixtureGenerator {
     private async  addDatabaseAnnotationsMetadata() {
         const abstractDatabaseHelperContent = getDatabaseAnnotationsHelper(this.extensionVersion);
 
-        var abstractDatabaseHelperFilePath = this.helpersDatabaseFolderPath + "/database_annotations.dart";
+        var abstractDatabaseHelperFilePath = Path.join(this.folderManager.helpersDatabaseFolderPath, "database_annotations.dart");
 
         await FileManager.addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
     }
@@ -146,14 +149,14 @@ export class SqliteFixtureGenerator {
     private async  addDbEntity() {
         const abstractDatabaseHelperContent = getDbEntityAbstractContent(this.extensionVersion);
 
-        var abstractDatabaseHelperFilePath = this.helpersDatabaseFolderPath + "/db_entity.dart";
+        var abstractDatabaseHelperFilePath = Path.join(this.folderManager.helpersDatabaseFolderPath, "db_entity.dart");
 
         await FileManager.addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
     }
 
     private async addUserAccountModelFile() {
 
-        var dbUserAccountModelPath = this.modelsFolderPath + "/user_account.dart";
+        var dbUserAccountModelPath = Path.join(this.folderManager.modelsFolderPath, "user_account.dart");
 
         try {
             var concreteUserAccountContent = getConcreteUserAccountContent(this.extensionVersion, this.packageName);
@@ -165,29 +168,39 @@ export class SqliteFixtureGenerator {
             showCriticalError(error);
             return;
         }
-    }    
+    }
 
     private async processModelFiles() {
-        var databaseHelpersGenerator = new DatabaseHelpersGenerator(this.helpersDatabaseFolderPath, this.packageName, this.extensionVersion);
+        var databaseHelpersGenerator = new DatabaseHelpersGenerator(this.folderManager.helpersDatabaseFolderPath, this.packageName, this.extensionVersion);
 
-        var modelsFolderParser: ModelsFolderParser = new ModelsFolderParser(this.modelsFolderPath, databaseHelpersGenerator);
-        var existingModelsList = await modelsFolderParser.parseFolderExistingContent();
+        var modelsFolderParser: ModelsFolderParser = new ModelsFolderParser(this.folderManager, databaseHelpersGenerator);
+        var existingAccountRelatedModelsList = await modelsFolderParser.parseAccountRelatedFolderExistingContent();
+        var existingIndependentModelsList = await modelsFolderParser.parseIndependentFolderExistingContent();
 
-        var newModelsNameInPascalCaseList: string[] = await this.addNewModelFiles(databaseHelpersGenerator);        
+        var newIndependentModelsNameInPascalCaseList: string[] = await this.addNewModelFiles(databaseHelpersGenerator, false);
+        var newAccountRelatedModelsNameInPascalCaseList: string[] = await this.addNewModelFiles(databaseHelpersGenerator, true);
 
-        var allModelsList = newModelsNameInPascalCaseList.concat(existingModelsList);
-        
+        var allModelsList = newIndependentModelsNameInPascalCaseList.concat(existingIndependentModelsList, "UserAccount", newAccountRelatedModelsNameInPascalCaseList, existingAccountRelatedModelsList);
+
         databaseHelpersGenerator.addUserAccountDatabaseHelper();
-        
+
         databaseHelpersGenerator.addDatabaseHelper(allModelsList);
 
     }
 
-    private async addNewModelFiles(databaseHelpersGenerator : DatabaseHelpersGenerator): Promise<string[]> {
+    private async addNewModelFiles(databaseHelpersGenerator: DatabaseHelpersGenerator, isAccountRelated: boolean): Promise<string[]> {
         var newModelsNameInPascalCaseList: string[] = [];
 
         while (true) {
-            const dbModelNameInPascalCase = await vscode.window.showInputBox(newModelInputBoxOptions);
+            var dbModelNameInPascalCase: string | undefined;
+
+            if (isAccountRelated === true) {
+                dbModelNameInPascalCase = await vscode.window.showInputBox(newAccountRelatedModelInputBoxOptions);
+            }
+            else {
+                dbModelNameInPascalCase = await vscode.window.showInputBox(newIndependentModelInputBoxOptions);
+            }
+
             if (!dbModelNameInPascalCase) {
                 break;
             }
@@ -198,12 +211,21 @@ export class SqliteFixtureGenerator {
             }
 
             newModelsNameInPascalCaseList.push(dbModelNameInPascalCase);
-            databaseHelpersGenerator.addConcreteEntityDatabaseHelper(dbModelNameInPascalCase);
 
-            const modelData = getConcreteEntitySkeletonContent(this.extensionVersion, this.packageName, dbModelNameInPascalCase);
-
+            var modelData: string;
+            var dbModelPath;
             var modelFileName: string = Utils.getUnderscoreCase(dbModelNameInPascalCase);
-            var dbModelPath = this.modelsFolderPath + "/" + modelFileName + ".dart";
+
+            if (isAccountRelated === true) {
+                databaseHelpersGenerator.addConcreteAccountRelatedEntityDatabaseHelper(dbModelNameInPascalCase);
+                modelData = getConcreteAccountRelatedEntitySkeletonContent(this.extensionVersion, this.packageName, dbModelNameInPascalCase);
+                dbModelPath = Path.join(this.folderManager.accountRelatedModelsFolderPath, modelFileName + ".dart");
+            }
+            else {
+                databaseHelpersGenerator.addConcreteIndependentEntityDatabaseHelper(dbModelNameInPascalCase);
+                modelData = getConcreteIndependentEntitySkeletonContent(this.extensionVersion, this.packageName, dbModelNameInPascalCase);
+                dbModelPath = Path.join(this.folderManager.independentModelsFolderPath, modelFileName + ".dart");
+            }
 
             try {
                 await writeFile(dbModelPath, modelData, 'utf8');
