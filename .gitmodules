@@ -1,0 +1,3 @@
+[submodule "flutter-orm-m8"]
+	path = flutter-orm-m8
+	url = https://github.com/matei-tm/flutter-orm-m8.git
