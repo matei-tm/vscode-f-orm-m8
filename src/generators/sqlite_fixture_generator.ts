@@ -8,9 +8,8 @@ import { showError, showInfo, showCriticalError } from "../helper/messaging";
 import getDbEntityAbstractContent from "../templates/database/db_entity";
 import * as Path from 'path';
 import getConcreteUserAccountContent from "../templates/models/concrete_user_account";
-import getDatabaseAnnotationsHelper from "../templates/database/database_annotations";
 import getConcreteAccountRelatedEntitySkeletonContent from "../templates/models/concrete_account_related_entity";
-import { Utils } from "../utils/utils";
+import { Utils, Tuple } from "../utils/utils";
 import { ModelsFolderParser } from "../parser/models_folder_parser";
 import { FileManager } from "./file_manager";
 import { FolderManager } from "./folder_manager";
@@ -47,7 +46,7 @@ export class SqliteFixtureGenerator {
     private currentFolder: fs.PathLike | undefined;
     private extensionVersion: any;
 
-    private packageName: string = "";
+    private flutterProjectPackageName: string = "";
     private folderManager: FolderManager;
 
     constructor(extensionContext: vscode.ExtensionContext) {
@@ -66,14 +65,13 @@ export class SqliteFixtureGenerator {
             return;
         }
 
-        this.packageName = await this.addOrUpdateDependencyOnSqflite();
-        if (this.packageName === undefined || this.packageName === "") {
-            showError(new Error("The package name is missing"), true);
-            return;
+        this.flutterProjectPackageName = await this.addOrUpdateDependencyOnExternalPackages();
+        if (this.flutterProjectPackageName === undefined || this.flutterProjectPackageName === "") {
+            showError(new Error("Adding dependency to pubspec failed"), true);
+            return false;
         }
 
         await this.addAbstractDatabaseHelper();
-        await this.addDatabaseAnnotationsMetadata();
         await this.addDbEntity();
 
         await this.addUserAccountModelFile();
@@ -126,22 +124,21 @@ export class SqliteFixtureGenerator {
         return true;
     }
 
-    private async  addOrUpdateDependencyOnSqflite(): Promise<string> {
-        return DependenciesSolver.solveDependencyOnSqflite(this.currentFolder);
+    private async  addOrUpdateDependencyOnExternalPackages(): Promise<string> {
+        let sqflitePackage: Tuple = ["sqflite", "1.0.0"];
+        let flutterOrmM8Package: Tuple = ["flutter_orm_m8", "0.0.3"];
+        var myReferencedPackages : Array<Tuple> = [sqflitePackage, flutterOrmM8Package];
+
+        var dependenciesSolver: DependenciesSolver = new DependenciesSolver(myReferencedPackages);
+
+        await dependenciesSolver.solveDependencyOnPackages(this.currentFolder);
+        return DependenciesSolver.currentPackageName;
     }
 
     private async  addAbstractDatabaseHelper() {
         const abstractDatabaseHelperContent = getAbstractDatabaseHelper(this.extensionVersion);
 
         var abstractDatabaseHelperFilePath = Path.join(this.folderManager.helpersDatabaseFolderPath, "abstract_database_helper.dart");
-
-        await FileManager.addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
-    }
-
-    private async  addDatabaseAnnotationsMetadata() {
-        const abstractDatabaseHelperContent = getDatabaseAnnotationsHelper(this.extensionVersion);
-
-        var abstractDatabaseHelperFilePath = Path.join(this.folderManager.helpersDatabaseFolderPath, "database_annotations.dart");
 
         await FileManager.addFileWithContent(abstractDatabaseHelperFilePath, abstractDatabaseHelperContent);
     }
@@ -159,7 +156,7 @@ export class SqliteFixtureGenerator {
         var dbUserAccountModelPath = Path.join(this.folderManager.modelsFolderPath, "user_account.dart");
 
         try {
-            var concreteUserAccountContent = getConcreteUserAccountContent(this.extensionVersion, this.packageName);
+            var concreteUserAccountContent = getConcreteUserAccountContent(this.extensionVersion, this.flutterProjectPackageName);
             await writeFile(dbUserAccountModelPath, concreteUserAccountContent, 'utf8');
 
             console.log(`The file ${dbUserAccountModelPath} was created.`);
@@ -171,7 +168,7 @@ export class SqliteFixtureGenerator {
     }
 
     private async processModelFiles() {
-        var databaseHelpersGenerator = new DatabaseHelpersGenerator(this.folderManager.helpersDatabaseFolderPath, this.packageName, this.extensionVersion);
+        var databaseHelpersGenerator = new DatabaseHelpersGenerator(this.folderManager.helpersDatabaseFolderPath, this.flutterProjectPackageName, this.extensionVersion);
 
         var modelsFolderParser: ModelsFolderParser = new ModelsFolderParser(this.folderManager, databaseHelpersGenerator);
         var existingAccountRelatedModelsList = await modelsFolderParser.parseAccountRelatedFolderExistingContent();
@@ -218,12 +215,12 @@ export class SqliteFixtureGenerator {
 
             if (isAccountRelated === true) {
                 databaseHelpersGenerator.addConcreteAccountRelatedEntityDatabaseHelper(dbModelNameInPascalCase);
-                modelData = getConcreteAccountRelatedEntitySkeletonContent(this.extensionVersion, this.packageName, dbModelNameInPascalCase);
+                modelData = getConcreteAccountRelatedEntitySkeletonContent(this.extensionVersion, this.flutterProjectPackageName, dbModelNameInPascalCase);
                 dbModelPath = Path.join(this.folderManager.accountRelatedModelsFolderPath, modelFileName + ".dart");
             }
             else {
                 databaseHelpersGenerator.addConcreteIndependentEntityDatabaseHelper(dbModelNameInPascalCase);
-                modelData = getConcreteIndependentEntitySkeletonContent(this.extensionVersion, this.packageName, dbModelNameInPascalCase);
+                modelData = getConcreteIndependentEntitySkeletonContent(this.extensionVersion, this.flutterProjectPackageName, dbModelNameInPascalCase);
                 dbModelPath = Path.join(this.folderManager.independentModelsFolderPath, modelFileName + ".dart");
             }
 

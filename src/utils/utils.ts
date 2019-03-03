@@ -1,5 +1,6 @@
 const pluralize = require("pluralize");
 
+export type Tuple = [string, string];
 export class Utils {
   static getEntityNamePluralsInPascalCase(entityNameInPascalCase: string): string {
     var expandLowerUpperWithSpaces = entityNameInPascalCase.replace(/([a-z])([A-Z])/g, '$1 $2');
