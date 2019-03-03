@@ -17,7 +17,7 @@ export class ModelsFolderParser {
 
     async parseAccountRelatedFolderExistingContent(): Promise<string[]> {
         console.log("Start parsing existing account related models:");
-        fs.readdir(this.folderManager.independentModelsFolderPath, (err, files) => {
+        fs.readdir(this.folderManager.accountRelatedModelsFolderPath, (err, files) => {
             files.map(async (file) => {
                 await this.processAccountRelatedModelFile(file);
             });
@@ -53,7 +53,7 @@ export class ModelsFolderParser {
         console.log(file);
 
         //todo deep analisys of decorators
-        this.databaseHelperGenerator.addConcreteAccountRelatedEntityDatabaseHelper(modelName);
+        this.databaseHelperGenerator.addConcreteIndependentEntityDatabaseHelper(modelName);
 
         this.existingIndependentEntitiesList.push(modelName);
     }
