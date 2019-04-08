@@ -3,12 +3,15 @@ import * as vscode from "vscode";
 import { showError, showInfo, showCriticalError } from "../helper/messaging";
 import { GenError } from "../model/gen_error";
 import { Tuple } from "./utils";
+
 export class DependenciesSolver {
     static currentPackageName: string;
     private _referencedPackages: Array<Tuple>;
+    private _referencedDevPackages: Array<Tuple>;
 
-    constructor(referencedPackages: Array<Tuple>) {
+    constructor(referencedPackages: Array<Tuple>, referencedDevPackages: Array<Tuple>) {
         this._referencedPackages = referencedPackages;
+        this._referencedDevPackages = referencedDevPackages;
     }
 
     async solveDependencyOnPackages(currentFolder: any): Promise<boolean> {
@@ -38,9 +41,8 @@ export class DependenciesSolver {
         const originalLines = pubspecString.split("\n");
         let currentPubspec: string = pubspecString;
 
-        for (let i = 0; i < this._referencedPackages.length; i++) {
-            currentPubspec = await this.solveDependencyOnPackage(currentFolder, this._referencedPackages[i], currentPubspec);
-        }
+        currentPubspec = await this.upsertDependencies(currentPubspec, currentFolder, this._referencedPackages, false);
+        currentPubspec = await this.upsertDependencies(currentPubspec, currentFolder, this._referencedDevPackages, true);
 
         vscode.window.activeTextEditor.edit(editBuilder => {
             editBuilder.replace(
@@ -59,9 +61,16 @@ export class DependenciesSolver {
         return result;
     }
 
-    private async solveDependencyOnPackage(currentFolder: any, element: Tuple, currentPubspec: string): Promise<string> {
+    private async upsertDependencies(currentPubspec: string, currentFolder: any, referencedPackages: Array<Tuple>, isDevSection: boolean) {
+        for (let i = 0; i < referencedPackages.length; i++) {
+            currentPubspec = await this.solveDependencyOnPackage(currentFolder, referencedPackages[i], currentPubspec, isDevSection);
+        }
+        return currentPubspec;
+    }
+
+    private async solveDependencyOnPackage(currentFolder: any, element: Tuple, currentPubspec: string, isDevDependency: boolean): Promise<string> {
         try {
-            let addDependencyOutput = this.addDependencyByText(currentPubspec, element[0], element[1]);
+            let addDependencyOutput = this.addDependencyByText(currentPubspec, element[0], element[1], isDevDependency);
             currentPubspec = addDependencyOutput.result;
 
             showInfo(
@@ -124,8 +133,18 @@ export class DependenciesSolver {
     }
 
     private addDependencyByText(
-        pubspecString: string, packageName: string, packageVersion: string
+        pubspecString: string, packageName: string, packageVersion: string, isDevDependency: boolean
     ): { insertionMethod: InsertionMethod; result: string } {
+
+        let pubspecSectionString: string;
+
+        if (isDevDependency) {
+            pubspecSectionString = `dev_dependencies:`;
+        }
+        else {
+            pubspecSectionString = `dependencies:`;
+        }
+
         let packagteDependencyString = `${packageName}: ^${packageVersion}`;
 
         let insertionMethod = InsertionMethod.ADD;
@@ -133,11 +152,11 @@ export class DependenciesSolver {
         let lines = pubspecString.split("\n");
 
         let dependencyLineIndex = lines.findIndex(
-            line => line.trim() === "dependencies:"
+            line => line.trim() === pubspecSectionString
         );
 
         if (dependencyLineIndex === -1) {
-            lines.push("dependencies:");
+            lines.push(pubspecSectionString);
             dependencyLineIndex = lines.length - 1;
         }
 
