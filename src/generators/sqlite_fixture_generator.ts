@@ -3,7 +3,7 @@ import { promisify } from 'util';
 import * as fs from 'fs';
 import { DependenciesSolver } from "../utils/dependencies_solver";
 import { showError, showInfo, showCriticalError } from "../helper/messaging";
-
+import {FlutterHooks} from "../helper/flutter_hooks";
 import * as Path from 'path';
 import getConcreteUserAccountContent from "../templates/models/concrete_user_account";
 import getConcreteAccountRelatedEntitySkeletonContent from "../templates/models/concrete_account_related_entity";
@@ -11,7 +11,6 @@ import { Utils, Tuple } from "../utils/utils";
 import { ModelsFolderParser } from "../parser/models_folder_parser";
 import { FolderManager } from "./folder_manager";
 import getConcreteIndependentEntitySkeletonContent from "../templates/models/concrete_independent_entity";
-
 
 const writeFile = promisify(fs.writeFile);
 
@@ -67,8 +66,7 @@ export class SqliteFixtureGenerator {
             return false;
         }
 
-        //todo adding UserAccountModel file will depends on dependendent existence
-        await this.addUserAccountModelFile();
+        FlutterHooks.getDartPackages();
 
         await this.processModelFiles();
 
@@ -152,18 +150,25 @@ export class SqliteFixtureGenerator {
 
     private async processModelFiles() {
 
-        var modelsFolderParser: ModelsFolderParser = new ModelsFolderParser(this.folderManager);
-        var existingAccountRelatedModelsList = await modelsFolderParser.parseAccountRelatedFolderExistingContent();
-        var existingIndependentModelsList = await modelsFolderParser.parseIndependentFolderExistingContent();
+        let modelsFolderParser: ModelsFolderParser = new ModelsFolderParser(this.folderManager);
+        let existingAccountRelatedModelsList = await modelsFolderParser.parseAccountRelatedFolderExistingContent();
+        let existingIndependentModelsList = await modelsFolderParser.parseIndependentFolderExistingContent();
 
-        var newIndependentModelsNameInPascalCaseList: string[] = await this.addNewModelFiles(false);
-        var newAccountRelatedModelsNameInPascalCaseList: string[] = await this.addNewModelFiles(true);
+        let newIndependentModelsNameInPascalCaseList: string[] = await this.addNewModelFiles(false);
+        let newAccountRelatedModelsNameInPascalCaseList: string[] = await this.addNewModelFiles(true);
+        let allModelsList = newIndependentModelsNameInPascalCaseList.concat(existingIndependentModelsList, newAccountRelatedModelsNameInPascalCaseList, existingAccountRelatedModelsList);
 
-        var allModelsList = newIndependentModelsNameInPascalCaseList.concat(existingIndependentModelsList, "UserAccount", newAccountRelatedModelsNameInPascalCaseList, existingAccountRelatedModelsList);
-        //todo Log allModelsList with verbosity...
-        //todo user orm generator
+        if (existingAccountRelatedModelsList.length > 0 || newAccountRelatedModelsNameInPascalCaseList.length > 0) {
+            await this.addUserAccountModelFile();
+            allModelsList.push("UserAccount");
+        }
 
+        console.log(allModelsList.toString());
 
+        if (vscode.workspace.workspaceFolders) {
+            let folder = vscode.workspace.workspaceFolders[0];
+            await vscode.tasks.executeTask(FlutterHooks.createPubBuildRunnerTask(folder));
+        }
     }
 
     private async addNewModelFiles(isAccountRelated: boolean): Promise<string[]> {
