@@ -1,12 +1,22 @@
-# Sqflite (SQLite for Flutter) fixture generator for Visual Studio Code
+# Flutter ORM M8 Generator
 
-The fixture generator scaffolds a Flutter project with Sqflite support.
+VS Code extension to generate database adapters based on [flutter-orm-m8](https://github.com/matei-tm/flutter-orm-m8) framework for Flutter application
+
+## Introduction
+
+This VS Code extension scaffolds a Flutter project, adding [flutter-orm-m8](https://github.com/matei-tm/flutter-orm-m8) dependencies and framework.
+The current framework integrates [sqlite-m8-generator](https://github.com/matei-tm/flutter-sqlite-m8-generator) engine and is dedicated for SQLite data repository.
+In the future, we plan to extend the generator engines to other data repository types.
 
 ## Features
 
-- Check if the projects is a Flutter one, and add the sqflite dependency to pubspec.yaml
-- Generates the required folder and classes needed to integrate SQLite repository
-- The user may generate starter models by simply input the model name 
+- Check if the projects is a Flutter one, and add the required dependencies to pubspec.yaml
+- Generates the [flutter-orm-m8](https://github.com/matei-tm/flutter-orm-m8) framework folder structure
+- Entering the model name, the user have the possibility to generate starter, templated, models implementing:
+  *  DbEntity
+  *  DbAccountEntity
+  *  DbAccountRelatedEntity
+- Parse the existing and newly created models annotations and generates, according to [flutter-orm-m8](https://github.com/matei-tm/flutter-orm-m8) annotation system, the fixture and the database adapter
 
 ## Requirements
 
@@ -15,4 +25,24 @@ The fixture generator scaffolds a Flutter project with Sqflite support.
 
 ## Installation
 
-[Install from the Visual Studio Code Marketplace](https://marketplace.visualstudio.com/items?itemName=vscode-flutter-sqlite-extension) or by [searching within VS Code](https://code.visualstudio.com/docs/editor/extension-gallery#_search-for-an-extension).
+[Install from the Visual Studio Code Marketplace](https://marketplace.visualstudio.com/items?itemName=matei-tm.flutter-orm-m8) or by [searching within VS Code](https://code.visualstudio.com/docs/editor/extension-gallery#_search-for-an-extension).
+
+## Documentation
+
+Please see:
+
+* [flutter-orm-m8 documentation](https://github.com/matei-tm/flutter-orm-m8)
+* [sqlite-m8-generator documentation](https://github.com/matei-tm/flutter-sqlite-m8-generator)
+
+## Changelog
+
+0.1.0
+
+* initial version
+* flutter-orm-m8 implementation
+* flutter-sqlite-m8-generator implementation
+* user input based, template generation for models implementing:
+  *  DbEntity
+  *  DbAccountEntity
+  *  DbAccountRelatedEntity
+* dart generation for SQLite fixture based on flutter-sqlite-m8-generator
