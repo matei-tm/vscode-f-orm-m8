@@ -3,7 +3,7 @@ import { promisify } from 'util';
 import * as fs from 'fs';
 import { DependenciesSolver } from "../utils/dependencies_solver";
 import { showError, showInfo, showCriticalError } from "../helper/messaging";
-import {FlutterHooks} from "../helper/flutter_hooks";
+import { FlutterHooks } from "../helper/flutter_hooks";
 import * as Path from 'path';
 import getConcreteUserAccountContent from "../templates/models/concrete_user_account";
 import getConcreteAccountRelatedEntitySkeletonContent from "../templates/models/concrete_account_related_entity";
@@ -36,22 +36,24 @@ const newAccountRelatedModelInputBoxOptions: vscode.InputBoxOptions = {
     }
 };
 
-export class SqliteFixtureGenerator {
+export class OrmM8FixtureGenerator {
 
     private currentFolder: fs.PathLike | undefined;
     private extensionVersion: any;
 
     private flutterProjectPackageName: string = "";
     private folderManager: FolderManager;
+    private databaseType: string;
 
-    constructor(extensionContext: vscode.ExtensionContext) {
+    constructor(extensionContext: vscode.ExtensionContext, databaseType: string) {
         this.extensionVersion = this.getExtensionVersion(extensionContext);
         this.currentFolder = vscode.workspace.rootPath;
+        this.databaseType = databaseType;
 
         this.folderManager = new FolderManager(this.currentFolder);
     }
 
-    async generateSqliteFixture() {
+    async generateOrmM8Fixture() {
         if (this.extensionVersion === undefined) {
             return;
         }
@@ -60,7 +62,8 @@ export class SqliteFixtureGenerator {
             return;
         }
 
-        this.flutterProjectPackageName = await this.addOrUpdateDependencyOnExternalPackages();
+        this.flutterProjectPackageName = await this.addOrUpdateDependencyOnExternalPackages(this.databaseType);
+
         if (this.flutterProjectPackageName === undefined || this.flutterProjectPackageName === "") {
             showError(new Error("Adding dependency to pubspec failed"), true);
             return false;
@@ -70,7 +73,7 @@ export class SqliteFixtureGenerator {
 
         await this.processModelFiles();
 
-        showInfo('Flutter-orm-m8: Generate Sqlite Fixture was successful!');
+        showInfo(`Flutter-orm-m8: Generate ${this.databaseType} Fixture was successful!`);
     }
 
     private getExtensionVersion(extensionContext: vscode.ExtensionContext): any {
@@ -116,21 +119,27 @@ export class SqliteFixtureGenerator {
         return true;
     }
 
-    private async  addOrUpdateDependencyOnExternalPackages(): Promise<string> {
-        let sqflitePackage: Tuple = ["sqflite", "1.1.0"];
-        let flutterOrmM8Package: Tuple = ["flutter_orm_m8", "0.4.0"];
-        var myReferencedPackages: Array<Tuple> = [sqflitePackage, flutterOrmM8Package];
+    private async  addOrUpdateDependencyOnExternalPackages(databaseType: string): Promise<string> {
+        let databaseDriverPackage: Tuple;
+        let flutterOrmM8Package: Tuple;
+        let myReferencedPackages: Array<Tuple>;
 
-        let flutterSqliteM8GeneratorPackage: Tuple = ["flutter_sqlite_m8_generator", "0.2.0"];
+        if (databaseType === "Sqlite") {
+            databaseDriverPackage = ["sqflite", "1.1.0"];
+            flutterOrmM8Package = ["flutter_orm_m8", "0.4.0"];
+            myReferencedPackages = [databaseDriverPackage, flutterOrmM8Package];
+        }
+        else { throw new Error("Not implemented database type"); }
+
+        let flutterOrmM8GeneratorPackage: Tuple = ["flutter_sqlite_m8_generator", "0.2.0"];
         let buildRunner: Tuple = ["build_runner", "1.0.0"];
-        var myReferencedDevPackages: Array<Tuple> = [buildRunner, flutterSqliteM8GeneratorPackage];
+        let myReferencedDevPackages: Array<Tuple> = [buildRunner, flutterOrmM8GeneratorPackage];
 
-        var dependenciesSolver: DependenciesSolver = new DependenciesSolver(myReferencedPackages, myReferencedDevPackages);
+        let dependenciesSolver: DependenciesSolver = new DependenciesSolver(myReferencedPackages, myReferencedDevPackages);
 
         await dependenciesSolver.solveDependencyOnPackages(this.currentFolder);
         return DependenciesSolver.currentPackageName;
     }
-
 
     private async addUserAccountModelFile() {
 

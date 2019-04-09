@@ -12,11 +12,11 @@ interface IPropertyType {
 */
 export default function getConcreteAccountRelatedEntitySkeletonContent(
   version: string,
-  packageName: string,
+  databaseType: string,
   entityNameInPascalCase: string,
   propertiesList: { [id: string]: IPropertyType } = {}
 ): string {
-  var headingWarning = getHeadingWarning(version);
+  var headingWarning = getHeadingWarning(version, databaseType);
   var entityNameInUnderscoreCase = Utils.getUnderscoreCasePlural(entityNameInPascalCase);
 
   return `${headingWarning}

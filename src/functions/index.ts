@@ -1,3 +1,3 @@
-import { SqliteFixtureGenerator } from "../generators/sqlite_fixture_generator";
+import { OrmM8FixtureGenerator } from "../generators/orm_m8_fixture_generator";
 
-export { SqliteFixtureGenerator as SqliteFixtureGenerator };
+export { OrmM8FixtureGenerator as OrmM8FixtureGenerator };

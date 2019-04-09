@@ -1,7 +1,6 @@
-export default function getHeadingWarning(version: string): string {
+export default function getHeadingWarning(version: string, databaseType: string): string {
     let extensionName: string = "vscode-flutter-orm-m8";
     let ormM8: string = "flutter-orm-m8";
-    let databaseType: string = "Sqlite";
 
     return `
 // GENERATED CODE - DO NOT MODIFY THIS HEADER

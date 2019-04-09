@@ -2,8 +2,8 @@ import getHeadingWarning from "../heading_warning";
 
 export default function getConcreteUserAccountContent(
   version: string,
-  packageName: string, ): string {
-  var headingWarning = getHeadingWarning(version);
+  databaseType: string, ): string {
+  var headingWarning = getHeadingWarning(version, databaseType);
 
   return `${headingWarning}
 
