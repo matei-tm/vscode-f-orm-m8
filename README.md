@@ -31,7 +31,7 @@ In the future, we plan to extend the generator engines to other data repository 
 
 Please see:
 
-* [Flutter Sqlite Generator documentation for using VS Code](https://matei-tm.github.io/vscode-flutter-orm-m8/).
+* [Flutter-ORM-M8 Generator documentation for using VS Code](https://matei-tm.github.io/vscode-flutter-orm-m8/).
 * [flutter-orm-m8 documentation](https://github.com/matei-tm/flutter-orm-m8)
 * [sqlite-m8-generator documentation](https://github.com/matei-tm/flutter-sqlite-m8-generator)
 

@@ -2,7 +2,7 @@
 	"name": "flutter-sqlite-generator",
 	"displayName": "Flutter Sqlite Generator",
 	"description": "Vs Code Extension to generate Sqlite CRUD classes",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"license": "SEE LICENSE IN LICENSE",
 	"publisher": "Mircea-Tiberiu MATEI",
 	"author": {
@@ -28,7 +28,7 @@
 		"commands": [
 			{
 				"command": "extension.flutterSqliteGenerateFixture",
-				"title": "Flutter: Generate Sqlite Fixture"
+				"title": "Flutter-orm-m8: Generate Sqlite Fixture"
 			}
 		]
 	},

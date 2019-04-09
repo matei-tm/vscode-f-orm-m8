@@ -70,7 +70,7 @@ export class SqliteFixtureGenerator {
 
         await this.processModelFiles();
 
-        showInfo('Flutter: Generate Sqlite Fixture was successful!');
+        showInfo('Flutter-orm-m8: Generate Sqlite Fixture was successful!');
     }
 
     private getExtensionVersion(extensionContext: vscode.ExtensionContext): any {

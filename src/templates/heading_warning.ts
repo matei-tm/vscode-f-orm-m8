@@ -1,6 +1,7 @@
 export default function getHeadingWarning(version: string): string {
     let extensionName: string = "vscode-flutter-orm-m8";
     let ormM8: string = "flutter-orm-m8";
+    let databaseType: string = "Sqlite";
 
     return `
 // GENERATED CODE - DO NOT MODIFY THIS HEADER
@@ -21,7 +22,9 @@ export default function getHeadingWarning(version: string): string {
 //   and annotate according to ${ormM8}
 //
 // If you changed this file you must 
-//   re-run the ${extensionName} from the command pallette
+//   re-run the extension 
+//   Flutter-orm-m8: Generate ${databaseType} Fixture
+//   from the command pallette
 
 `;
 }

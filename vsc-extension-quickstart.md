@@ -13,7 +13,7 @@ We pass the function containing the implementation of the command as the second 
 
 ## Get up and running straight away
 * Press `F5` to open a new window with your extension loaded.
-* Run your command from the command palette by pressing (`Ctrl+Shift+P` or `Cmd+Shift+P` on Mac) and typing `Flutter: Generate Sqlite Fixture`.
+* Run your command from the command palette by pressing (`Ctrl+Shift+P` or `Cmd+Shift+P` on Mac) and typing `Flutter-orm-m8: Generate Sqlite Fixture`.
 * Set breakpoints in your code inside `src/extension.ts` to debug your extension.
 * Find output from your extension in the debug console.
 
