@@ -1,10 +1,8 @@
 import getHeadingWarning from "../heading_warning";
 import { Utils } from "../../utils/utils";
+import { IPropertyType } from "../../helper/property_type";
+import { DatabaseType } from "../../helper/database_type";
 
-interface IPropertyType {
-  columnName: string;
-  columnType: string;
-}
 
 /**
  * Generates the content for the /models/db_entity.dart file
@@ -12,7 +10,7 @@ interface IPropertyType {
 */
 export default function getConcreteAccountRelatedEntitySkeletonContent(
   version: string,
-  databaseType: string,
+  databaseType: DatabaseType,
   entityNameInPascalCase: string,
   propertiesList: { [id: string]: IPropertyType } = {}
 ): string {

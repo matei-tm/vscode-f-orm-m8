@@ -1,4 +1,6 @@
-export default function getHeadingWarning(version: string, databaseType: string): string {
+import { DatabaseType } from "../helper/database_type";
+
+export default function getHeadingWarning(version: string, databaseType: DatabaseType): string {
     let extensionName: string = "vscode-flutter-orm-m8";
     let ormM8: string = "flutter-orm-m8";
 
@@ -7,6 +9,7 @@ export default function getHeadingWarning(version: string, databaseType: string)
 // **************************************************************************
 // Generator: ${extensionName} 
 // Version: ${version}
+// Database: ${databaseType}
 // **************************************************************************
 // 
 // WARNING: If you alter the lines above, on future updates

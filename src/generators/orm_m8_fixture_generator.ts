@@ -11,6 +11,7 @@ import { Utils, Tuple } from "../utils/utils";
 import { ModelsFolderParser } from "../parser/models_folder_parser";
 import { FolderManager } from "./folder_manager";
 import getConcreteIndependentEntitySkeletonContent from "../templates/models/concrete_independent_entity";
+import { DatabaseType } from "../helper/database_type";
 
 const writeFile = promisify(fs.writeFile);
 
@@ -43,9 +44,9 @@ export class OrmM8FixtureGenerator {
 
     private flutterProjectPackageName: string = "";
     private folderManager: FolderManager;
-    private databaseType: string;
+    private databaseType: DatabaseType;
 
-    constructor(extensionContext: vscode.ExtensionContext, databaseType: string) {
+    constructor(extensionContext: vscode.ExtensionContext, databaseType: DatabaseType) {
         this.extensionVersion = this.getExtensionVersion(extensionContext);
         this.currentFolder = vscode.workspace.rootPath;
         this.databaseType = databaseType;
@@ -119,12 +120,12 @@ export class OrmM8FixtureGenerator {
         return true;
     }
 
-    private async  addOrUpdateDependencyOnExternalPackages(databaseType: string): Promise<string> {
+    private async  addOrUpdateDependencyOnExternalPackages(databaseType: DatabaseType): Promise<string> {
         let databaseDriverPackage: Tuple;
         let flutterOrmM8Package: Tuple;
         let myReferencedPackages: Array<Tuple>;
 
-        if (databaseType === "Sqlite") {
+        if (databaseType === DatabaseType.SQLITE) {
             databaseDriverPackage = ["sqflite", "1.1.0"];
             flutterOrmM8Package = ["flutter_orm_m8", "0.4.0"];
             myReferencedPackages = [databaseDriverPackage, flutterOrmM8Package];
@@ -146,7 +147,7 @@ export class OrmM8FixtureGenerator {
         var dbUserAccountModelPath = Path.join(this.folderManager.modelsFolderPath, "user_account.dart");
 
         try {
-            var concreteUserAccountContent = getConcreteUserAccountContent(this.extensionVersion, this.flutterProjectPackageName);
+            var concreteUserAccountContent = getConcreteUserAccountContent(this.extensionVersion, this.databaseType);
             await writeFile(dbUserAccountModelPath, concreteUserAccountContent, 'utf8');
 
             console.log(`The file ${dbUserAccountModelPath} was created.`);
@@ -209,11 +210,11 @@ export class OrmM8FixtureGenerator {
             var modelFileName: string = Utils.getUnderscoreCase(dbModelNameInPascalCase);
 
             if (isAccountRelated === true) {
-                modelData = getConcreteAccountRelatedEntitySkeletonContent(this.extensionVersion, this.flutterProjectPackageName, dbModelNameInPascalCase);
+                modelData = getConcreteAccountRelatedEntitySkeletonContent(this.extensionVersion, this.databaseType, dbModelNameInPascalCase);
                 dbModelPath = Path.join(this.folderManager.accountRelatedModelsFolderPath, modelFileName + ".dart");
             }
             else {
-                modelData = getConcreteIndependentEntitySkeletonContent(this.extensionVersion, this.flutterProjectPackageName, dbModelNameInPascalCase);
+                modelData = getConcreteIndependentEntitySkeletonContent(this.extensionVersion, this.databaseType, dbModelNameInPascalCase);
                 dbModelPath = Path.join(this.folderManager.independentModelsFolderPath, modelFileName + ".dart");
             }
 
