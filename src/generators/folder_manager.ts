@@ -26,8 +26,6 @@ export class FolderManager {
 
     async init() {
         await this.addWorkspaceFolder(this.modelsFolderPath);
-        await this.addWorkspaceFolder(this.fragmentsFolderPath);
-        await this.addWorkspaceFolder(this.fragmentRowsFolderPath);
         await this.addWorkspaceFolder(this.independentModelsFolderPath);
         await this.addWorkspaceFolder(this.accountRelatedModelsFolderPath);
     }
