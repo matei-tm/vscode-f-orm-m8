@@ -2,6 +2,15 @@
 
 VS Code extension to generate database adapters based on [flutter-orm-m8](https://github.com/matei-tm/flutter-orm-m8) framework for Flutter application
 
+- [Flutter ORM M8 Generator](#flutter-orm-m8-generator)
+  - [Introduction](#introduction)
+  - [Features](#features)
+  - [Requirements](#requirements)
+  - [Installation](#installation)
+  - [Documentation](#documentation)
+  - [Changelog](#changelog)
+  - [Disclaimer](#disclaimer)
+
 ## Introduction
 
 This VS Code extension scaffolds a Flutter project, adding [flutter-orm-m8](https://github.com/matei-tm/flutter-orm-m8) dependencies and framework.
@@ -47,3 +56,14 @@ Please see:
   *  DbAccountEntity
   *  DbAccountRelatedEntity
 * dart generation for SQLite fixture based on flutter-sqlite-m8-generator
+
+## Disclaimer
+
+**Important:** 
+This extension, being a code generator, will create files and folders on the hard drive. Use a suitable source control system (eg, git) to protect your code from transient changes. The generator creates or updates, in the current Flutter project, the following files/folders:
+
+- pubspec.yaml
+- lib/models/*.dart
+- lib/main.adapter.g.m8.dart
+
+Although I should not overwrite any file, other than those mentioned, during this process, I do not provide any warranty or take any responsibility for the loss of data.
