@@ -2,6 +2,8 @@
 
 VS Code extension to generate database adapters based on [flutter-orm-m8](https://github.com/matei-tm/flutter-orm-m8) framework for Flutter application
 
+![Showcase](https://matei-tm.github.io/vscode-flutter-orm-m8/raw/master/docs/media/showcase.gif)
+
 - [Flutter ORM M8 Generator](#flutter-orm-m8-generator)
   - [Introduction](#introduction)
   - [Features](#features)
