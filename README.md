@@ -12,7 +12,7 @@ In the future, we plan to extend the generator engines to other data repository 
 
 - Check if the projects is a Flutter one, and add the required dependencies to pubspec.yaml
 - Generates the [flutter-orm-m8](https://github.com/matei-tm/flutter-orm-m8) framework folder structure
-- Entering the model name, the user have the possibility to generate starter, templated, models implementing:
+- Entering the model name, the user have the possibility to generate templated starter models implementing:
   *  DbEntity
   *  DbAccountEntity
   *  DbAccountRelatedEntity
