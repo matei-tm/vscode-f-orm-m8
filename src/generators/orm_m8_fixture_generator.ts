@@ -74,7 +74,7 @@ export class OrmM8FixtureGenerator {
 
         await this.processModelFiles();
 
-        showInfo(`Flutter-orm-m8: Generate ${this.databaseType} Fixture was successful!`);
+        showInfo(`Generation of ${this.databaseType} fixture was successful!`);
     }
 
     private getExtensionVersion(extensionContext: vscode.ExtensionContext): any {
