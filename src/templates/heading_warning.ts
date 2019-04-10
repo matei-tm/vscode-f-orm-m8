@@ -3,6 +3,7 @@ import { DatabaseType } from "../helper/database_type";
 export default function getHeadingWarning(version: string, databaseType: DatabaseType): string {
     let extensionName: string = "vscode-flutter-orm-m8";
     let ormM8: string = "flutter-orm-m8";
+    let currentTimestamp: number = Date.now();
 
     return `
 // GENERATED CODE - DO NOT MODIFY THIS HEADER
@@ -10,6 +11,7 @@ export default function getHeadingWarning(version: string, databaseType: Databas
 // Generator: ${extensionName} 
 // Version: ${version}
 // Database: ${databaseType}
+// Timestamp: ${currentTimestamp}
 // **************************************************************************
 // 
 // WARNING: If you alter the lines above, on future updates
