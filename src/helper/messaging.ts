@@ -13,12 +13,14 @@ let errorOptions = [
   { title: ErrorOptionType.ignore }
 ];
 
+let messagePrefix: string = "flutter-orm-m8 Assist: ";
+
 export function showInfo(message: string): Thenable<string | undefined> {
-  return vscode.window.showInformationMessage(`SqliteGen Assist: ${message}`);
+  return vscode.window.showInformationMessage(`${messagePrefix}${message}`);
 }
 
 export function showError(error: Error, isCritical: boolean = false): void {
-  let message: string = "SqliteGen Assist: ";
+  let message: string = messagePrefix;
   if (!isCritical) {
     message += error.message;
     vscode.window.showErrorMessage(message);
