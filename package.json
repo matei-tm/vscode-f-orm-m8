@@ -1,7 +1,7 @@
 {
-	"name": "flutter-sqlite-generator",
-	"displayName": "Flutter Sqlite Generator",
-	"description": "Vs Code Extension to generate Sqlite CRUD classes",
+	"name": "flutter-orm-m8-generator",
+	"displayName": "Flutter ORM M8 Generator",
+	"description": "Vs Code generator for orm-m8 framework fixture",
 	"version": "0.1.0",
 	"license": "SEE LICENSE IN LICENSE",
 	"publisher": "Mircea-Tiberiu MATEI",
@@ -18,10 +18,28 @@
 		"vscode": "^1.30.0"
 	},
 	"categories": [
-		"Other"
+		"Formatters",
+		"Linters",
+		"Extension Packs"
 	],
+	"keywords": [
+		"sqlite",
+		"flutter",
+		"dart",
+		"mobile",
+		"android",
+		"ios",
+		"orm",
+		"orm-m8",
+		"m8"		
+	],
+	"icon": "docs/media/orm-m8.png",
 	"activationEvents": [
 		"onCommand:extension.flutterSqliteGenerateFixture"
+	],
+	"extensionDependencies": [
+		"Dart-Code.dart-code",
+		"Dart-Code.flutter"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
