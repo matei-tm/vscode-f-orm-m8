@@ -70,8 +70,18 @@ export class ModelFilesBuilder {
 
         console.log(allModelsList.toString());
 
+        if (newIndependentModelsNameInPascalCaseList.length > 0 || newAccountRelatedModelsNameInPascalCaseList.length > 0) {
+            showInfo(`New user models for ${this.databaseType} have been added`);
+        }
+
+        await this.StartExternalGenerator();
+    }
+
+    private async StartExternalGenerator() {
         if (vscode.workspace.workspaceFolders) {
             let folder = vscode.workspace.workspaceFolders[0];
+            showInfo(`Starting builder. Waiting for result...`);
+            vscode.tasks.onDidEndTask((event) => showInfo(`The builder finished the code generation task ${event}`));
             await vscode.tasks.executeTask(FlutterHooks.createPubBuildRunnerTask(folder));
         }
     }

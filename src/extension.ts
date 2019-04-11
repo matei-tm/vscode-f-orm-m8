@@ -16,9 +16,9 @@ export function activate(context: vscode.ExtensionContext) {
 	// The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand(
 		'extension.flutterSqliteGenerateFixture',
-		() => {
+		async () => {
 			var generator = new OrmM8FixtureGenerator(context, DatabaseType.SQLITE);
-			generator.generateOrmM8Fixture();
+			await generator.generateOrmM8Fixture();
 		});
 
 	context.subscriptions.push(disposable);

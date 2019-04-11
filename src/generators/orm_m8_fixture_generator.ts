@@ -43,8 +43,6 @@ export class OrmM8FixtureGenerator {
 
         let modelFilesBuilder: ModelFilesBuilder = new ModelFilesBuilder(this.currentFolder, this.extensionVersion, this.databaseType);
         await modelFilesBuilder.processModelFiles();
-
-        showInfo(`Generation of ${this.databaseType} fixture was successful!`);
     }
 
     private getExtensionVersion(extensionContext: vscode.ExtensionContext): any {
