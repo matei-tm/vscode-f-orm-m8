@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { promisify } from 'util';
 import * as fs from 'fs';
-import { showError, showInfo, showCriticalError } from "../helper/messaging";
+import { showError, showInfo, showCriticalError, showWarning } from "../helper/messaging";
 import { FlutterHooks } from "../helper/flutter_hooks";
 import * as Path from 'path';
 import getConcreteUserAccountContent from "../templates/models/concrete_user_account";
@@ -37,31 +37,33 @@ const newAccountRelatedModelInputBoxOptions: vscode.InputBoxOptions = {
 };
 
 export class ModelFilesBuilder {
-    private currentFolder: string | undefined;
     private extensionVersion: any;
 
     private folderManager: FolderManager;
     private databaseType: DatabaseType;
 
+    existingAccountRelatedModelsList: string[] = [];
+    existingIndependentModelsList: string[] = [];
+
     constructor(currentFolder: string | undefined, extensionVersion: any, databaseType: DatabaseType) {
         this.extensionVersion = extensionVersion;
-        this.currentFolder = currentFolder;
         this.databaseType = databaseType;
 
         this.folderManager = new FolderManager(currentFolder);
     }
 
     public async processModelFiles() {
-
         let modelsFolderParser: ModelsFolderParser = new ModelsFolderParser(this.folderManager);
-        let existingAccountRelatedModelsList = await modelsFolderParser.parseAccountRelatedFolderExistingContent();
-        let existingIndependentModelsList = await modelsFolderParser.parseIndependentFolderExistingContent();
+
+        this.existingAccountRelatedModelsList = await modelsFolderParser.parseAccountRelatedFolderExistingContent();
+        this.existingIndependentModelsList = await modelsFolderParser.parseIndependentFolderExistingContent();
 
         let newIndependentModelsNameInPascalCaseList: string[] = await this.addNewModelFiles(false);
         let newAccountRelatedModelsNameInPascalCaseList: string[] = await this.addNewModelFiles(true);
-        let allModelsList = newIndependentModelsNameInPascalCaseList.concat(existingIndependentModelsList, newAccountRelatedModelsNameInPascalCaseList, existingAccountRelatedModelsList);
 
-        if (existingAccountRelatedModelsList.length > 0 || newAccountRelatedModelsNameInPascalCaseList.length > 0) {
+        let allModelsList = newIndependentModelsNameInPascalCaseList.concat(this.existingIndependentModelsList, newAccountRelatedModelsNameInPascalCaseList, this.existingAccountRelatedModelsList);
+
+        if (!this.folderManager.userAccountExists && (this.existingAccountRelatedModelsList.length > 0 || newAccountRelatedModelsNameInPascalCaseList.length > 0)) {
             await this.addUserAccountModelFile();
             allModelsList.push("UserAccount");
         }
@@ -108,7 +110,17 @@ export class ModelFilesBuilder {
             }
 
             if (dbModelNameInPascalCase === undefined) {
-                showInfo('Invalid model name');
+                showWarning('Invalid model name');
+                break;
+            }
+
+            if (this.existingAccountRelatedModelsList.indexOf(dbModelNameInPascalCase) > -1) {
+                this.showWarningOnExistingFile(dbModelNameInPascalCase, true);
+                break;
+            }
+
+            if (this.existingIndependentModelsList.indexOf(dbModelNameInPascalCase) > -1) {
+                this.showWarningOnExistingFile(dbModelNameInPascalCase, false);
                 break;
             }
 
@@ -141,4 +153,8 @@ export class ModelFilesBuilder {
         return newModelsNameInPascalCaseList;
     }
 
+
+    private showWarningOnExistingFile(dbModelNameInPascalCase: string, isAccountRelated: boolean) {
+        showWarning(`${dbModelNameInPascalCase} model already exists in lib/models/${isAccountRelated ? "accountrelated" : "independent"} folder. Overwriting is disallowed.`);
+    }
 }

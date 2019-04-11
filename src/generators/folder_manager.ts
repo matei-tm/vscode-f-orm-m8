@@ -47,4 +47,12 @@ export class FolderManager {
             return;
         }
     }
+
+    userAccountExists(): boolean {
+        if (fs.existsSync(Path.join(this.modelsFolderPath, "user_account.dart"))) {
+            return true;
+        }
+
+        return false;
+    }
 }

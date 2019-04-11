@@ -19,6 +19,10 @@ export function showInfo(message: string): Thenable<string | undefined> {
   return vscode.window.showInformationMessage(`${messagePrefix}${message}`);
 }
 
+export function showWarning(message: string): Thenable<string | undefined> {
+  return vscode.window.showWarningMessage(`${messagePrefix}${message}`);
+}
+
 export function showError(error: Error, isCritical: boolean = false): void {
   let message: string = messagePrefix;
   if (!isCritical) {
