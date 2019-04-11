@@ -81,7 +81,7 @@ export class ModelFilesBuilder {
         if (vscode.workspace.workspaceFolders) {
             let folder = vscode.workspace.workspaceFolders[0];
             showInfo(`Starting builder. Waiting for result...`);
-            vscode.tasks.onDidEndTask((event) => showInfo(`The builder finished the code generation task ${event}`));
+            vscode.tasks.onDidEndTask((event) => showInfo(`All completed. Successfully finished the code generation task ${event.execution.task.name}`));
             await vscode.tasks.executeTask(FlutterHooks.createPubBuildRunnerTask(folder));
         }
     }
