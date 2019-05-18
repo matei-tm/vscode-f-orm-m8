@@ -1,5 +1,5 @@
 # Change Log
-All notable changes to the "flutter-orm-m8-generator" extension will be documented in this file.
+All notable changes to the "f-orm-m8-generator" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
@@ -10,10 +10,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Added
 
 * initial version
-* flutter-orm-m8 implementation
-* flutter-sqlite-m8-generator implementation
+* f-orm-m8 implementation
+* f-orm-m8-sqlite implementation
 * user input based, template generation for models implementing:
   *  DbEntity
   *  DbAccountEntity
   *  DbAccountRelatedEntity
-* dart generation for SQLite fixture based on flutter-sqlite-m8-generator
+* dart generation for SQLite fixture based on f-orm-m8-sqlite

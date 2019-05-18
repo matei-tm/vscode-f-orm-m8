@@ -13,7 +13,7 @@ let errorOptions = [
   { title: ErrorOptionType.ignore }
 ];
 
-let messagePrefix: string = "flutter-orm-m8: ";
+let messagePrefix: string = "f-orm-m8: ";
 
 export function showInfo(message: string): Thenable<string | undefined> {
   return vscode.window.showInformationMessage(`${messagePrefix}${message}`);

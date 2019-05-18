@@ -8,7 +8,7 @@ export default function getConcreteUserAccountContent(
 
   return `${headingWarning}
 
-import 'package:flutter_orm_m8/flutter_orm_m8.dart';
+import 'package:f_orm_m8/f_orm_m8.dart';
 
 @DataTable("user_accounts")
 class UserAccount implements DbAccountEntity {

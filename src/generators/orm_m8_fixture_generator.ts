@@ -90,17 +90,17 @@ export class OrmM8FixtureGenerator {
 
     private async  addOrUpdateDependencyOnExternalPackages(databaseType: DatabaseType): Promise<string> {
         let databaseDriverPackage: Tuple;
-        let flutterOrmM8Package: Tuple;
+        let fOrmM8Package: Tuple;
         let myReferencedPackages: Array<Tuple>;
 
         if (databaseType === DatabaseType.SQLITE) {
             databaseDriverPackage = ["sqflite", "1.1.0"];
-            flutterOrmM8Package = ["flutter_orm_m8", "0.4.0"];
-            myReferencedPackages = [databaseDriverPackage, flutterOrmM8Package];
+            fOrmM8Package = ["f_orm_m8", "0.4.0"];
+            myReferencedPackages = [databaseDriverPackage, fOrmM8Package];
         }
         else { throw new Error("Not implemented database type"); }
 
-        let flutterOrmM8GeneratorPackage: Tuple = ["flutter_sqlite_m8_generator", "0.2.0"];
+        let flutterOrmM8GeneratorPackage: Tuple = ["f_orm_m8_generator", "0.2.0"];
         let buildRunner: Tuple = ["build_runner", "1.0.0"];
         let myReferencedDevPackages: Array<Tuple> = [buildRunner, flutterOrmM8GeneratorPackage];
 
