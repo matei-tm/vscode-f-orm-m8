@@ -76,7 +76,7 @@ export class OrmM8FixtureGenerator {
     }
 
     private showInfoByTask(taskName: string): any {
-        let infoMessage = `${taskName} was completed`;
+        let infoMessage = `Task "${taskName}" was completed`;
 
         if (taskName == 'build_runner build') {
             infoMessage = 'All tasks completed';
