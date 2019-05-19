@@ -5,6 +5,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.1.2] - 2019-05-19
+
+### Changed
+
+* Package icon rebranding
+
 ## [0.1.1] - 2019-05-19
 
 ### Fix
