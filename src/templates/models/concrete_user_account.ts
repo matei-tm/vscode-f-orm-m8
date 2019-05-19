@@ -14,21 +14,20 @@ import 'package:f_orm_m8/f_orm_m8.dart';
 class UserAccount implements DbAccountEntity {
   @DataColumn(
       "id",
-      ColumnMetadata.PrimaryKey |
-          ColumnMetadata.Unique |
+      metadataLevel: ColumnMetadata.PrimaryKey |
           ColumnMetadata.AutoIncrement)
   @override
   int id;
 
-  @DataColumn("user_name", ColumnMetadata.NotNull)
+  @DataColumn("user_name", metadataLevel: ColumnMetadata.NotNull)
   @override
   String userName;
 
-  @DataColumn("account_email", ColumnMetadata.NotNull)
+  @DataColumn("account_email", metadataLevel: ColumnMetadata.NotNull)
   @override
   String email;
 
-  @DataColumn("account_abbr", ColumnMetadata.NotNull)
+  @DataColumn("account_abbr", metadataLevel: ColumnMetadata.NotNull)
   @override
   String abbreviation;  
 }

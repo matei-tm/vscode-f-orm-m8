@@ -31,7 +31,7 @@
 		"ios",
 		"orm",
 		"orm-m8",
-		"m8"		
+		"m8"
 	],
 	"icon": "docs/media/orm-m8.png",
 	"activationEvents": [

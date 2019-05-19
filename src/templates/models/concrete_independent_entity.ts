@@ -24,8 +24,7 @@ import 'package:f_orm_m8/f_orm_m8.dart';
 class ${entityNameInPascalCase} implements DbEntity {
   @DataColumn(
     "id",
-    ColumnMetadata.PrimaryKey |
-        ColumnMetadata.Unique |
+    metadataLevel: ColumnMetadata.PrimaryKey |
         ColumnMetadata.AutoIncrement)
   @override
   int id;
