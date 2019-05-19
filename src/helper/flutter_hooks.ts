@@ -24,7 +24,7 @@ export class FlutterHooks {
         }
     }
 
-    public static createPubBuildRunnerTask(folder: vs.WorkspaceFolder | undefined) {
+    public static createPubBuildRunnerBuildTask(folder: vs.WorkspaceFolder | undefined) {
 
         if (folder === undefined) {
             throw new Error("Workspace folder is undefined");
@@ -50,6 +50,35 @@ export class FlutterHooks {
         task.group = vs.TaskGroup.Build;
         task.isBackground = true;
         task.name = `build_runner build`;
+        return task;
+    }
+
+    public static createPubBuildRunnerCleanTask(folder: vs.WorkspaceFolder | undefined) {
+
+        if (folder === undefined) {
+            throw new Error("Workspace folder is undefined");
+        }
+
+        let workingDirectory = folder.uri instanceof Uri ? folder.uri.fsPath : folder.uri;
+
+        const task = new vs.Task(
+            {
+                command: "clean",
+                type: "flutter",
+            },
+            folder,
+            `build_runner clean`,
+            "flutter",
+            new vs.ShellExecution(
+                "flutter",
+                ["packages", "pub", "run", "build_runner", "clean"],
+                { cwd: workingDirectory },
+            ),
+            "$dart-pub-build_runner");
+
+        task.group = vs.TaskGroup.Build;
+        task.isBackground = true;
+        task.name = `build_runner clean`;
         return task;
     }
 }

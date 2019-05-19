@@ -2,6 +2,7 @@ import getHeadingWarning from "../heading_warning";
 import { Utils } from "../../utils/utils";
 import { IPropertyType } from "../../helper/property_type";
 import { DatabaseType } from "../../helper/database_type";
+import getSupportedTypesAsIgnored from "./supported_types";
 
 
 /**
@@ -25,8 +26,7 @@ import 'package:f_orm_m8/f_orm_m8.dart';
 class ${entityNameInPascalCase} implements DbAccountRelatedEntity {
   @DataColumn(
     "id",
-    metadataLevel: ColumnMetadata.PrimaryKey |
-        ColumnMetadata.AutoIncrement)
+        metadataLevel: ColumnMetadata.primaryKey | ColumnMetadata.autoIncrement)
   @override
   int id;
 
@@ -34,7 +34,10 @@ class ${entityNameInPascalCase} implements DbAccountRelatedEntity {
   @override
   int accountId;
 
-  String todoField; 
+  @DataColumn("description", metadataLevel: ColumnMetadata.unique)
+  String description;
+
+${getSupportedTypesAsIgnored()}
 }
 `;
 }

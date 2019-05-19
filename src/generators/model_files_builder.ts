@@ -63,7 +63,7 @@ export class ModelFilesBuilder {
 
         let allModelsList = newIndependentModelsNameInPascalCaseList.concat(this.existingIndependentModelsList, newAccountRelatedModelsNameInPascalCaseList, this.existingAccountRelatedModelsList);
 
-        if (!this.folderManager.userAccountExists && (this.existingAccountRelatedModelsList.length > 0 || newAccountRelatedModelsNameInPascalCaseList.length > 0)) {
+        if (!this.folderManager.userAccountExists() && (this.existingAccountRelatedModelsList.length > 0 || newAccountRelatedModelsNameInPascalCaseList.length > 0)) {
             await this.addUserAccountModelFile();
             allModelsList.push("UserAccount");
         }
@@ -82,7 +82,8 @@ export class ModelFilesBuilder {
             let folder = vscode.workspace.workspaceFolders[0];
             showInfo(`Starting builder. Waiting for result...`);
             vscode.tasks.onDidEndTask((event) => showInfo(`All completed. Successfully finished the code generation task ${event.execution.task.name}`));
-            await vscode.tasks.executeTask(FlutterHooks.createPubBuildRunnerTask(folder));
+            await vscode.tasks.executeTask(FlutterHooks.createPubBuildRunnerCleanTask(folder));
+            await vscode.tasks.executeTask(FlutterHooks.createPubBuildRunnerBuildTask(folder));
         }
     }
 

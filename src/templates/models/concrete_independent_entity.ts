@@ -2,6 +2,7 @@ import getHeadingWarning from "../heading_warning";
 import { Utils } from "../../utils/utils";
 import { DatabaseType } from "../../helper/database_type";
 import { IPropertyType } from "../../helper/property_type";
+import getSupportedTypesAsIgnored from "./supported_types";
 
 /**
  * Generates the content for the /models/your_model.dart file
@@ -24,13 +25,15 @@ import 'package:f_orm_m8/f_orm_m8.dart';
 class ${entityNameInPascalCase} implements DbEntity {
   @DataColumn(
     "id",
-    metadataLevel: ColumnMetadata.PrimaryKey |
-        ColumnMetadata.AutoIncrement)
+    metadataLevel: ColumnMetadata.primaryKey |
+        ColumnMetadata.autoIncrement)
   @override
   int id;
 
-  @DataColumn("description")
+  @DataColumn("description", metadataLevel: ColumnMetadata.unique)
   String description;
+
+${getSupportedTypesAsIgnored()}
 }
 `;
 }
