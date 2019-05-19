@@ -23,7 +23,15 @@ export class OrmM8FixtureGenerator {
         this.databaseType = databaseType;
     }
 
-    async generateOrmM8Fixture() {
+    async regenerateOrmM8Fixture() {
+        await this.generateOrmM8Fixture(false);
+    }
+
+    async generateOrmM8FixtureWithModels() {
+        await this.generateOrmM8Fixture(true);
+    }
+
+    private async generateOrmM8Fixture(withNewModels: boolean) {
         if (this.extensionVersion === undefined) {
             return;
         }
@@ -41,8 +49,22 @@ export class OrmM8FixtureGenerator {
 
         FlutterHooks.getDartPackages();
 
-        let modelFilesBuilder: ModelFilesBuilder = new ModelFilesBuilder(this.currentFolder, this.extensionVersion, this.databaseType);
-        await modelFilesBuilder.processModelFiles();
+        if (withNewModels) {
+            let modelFilesBuilder: ModelFilesBuilder = new ModelFilesBuilder(this.currentFolder, this.extensionVersion, this.databaseType);
+            await modelFilesBuilder.processModelFiles();
+        }
+
+        await this.StartExternalGenerator();
+    }
+
+    private async StartExternalGenerator() {
+        if (vscode.workspace.workspaceFolders) {
+            let folder = vscode.workspace.workspaceFolders[0];
+            showInfo(`Starting builder. Waiting for result...`);
+            vscode.tasks.onDidEndTask((event) => showInfo(`All completed. Successfully finished the code generation task ${event.execution.task.name}`));
+            await vscode.tasks.executeTask(FlutterHooks.createPubBuildRunnerCleanTask(folder));
+            await vscode.tasks.executeTask(FlutterHooks.createPubBuildRunnerBuildTask(folder));
+        }
     }
 
     private getExtensionVersion(extensionContext: vscode.ExtensionContext): any {

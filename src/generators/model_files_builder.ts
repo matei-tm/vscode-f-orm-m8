@@ -1,8 +1,7 @@
 import * as vscode from "vscode";
 import { promisify } from 'util';
 import * as fs from 'fs';
-import { showError, showInfo, showCriticalError, showWarning } from "../helper/messaging";
-import { FlutterHooks } from "../helper/flutter_hooks";
+import { showInfo, showCriticalError, showWarning } from "../helper/messaging";
 import * as Path from 'path';
 import getConcreteUserAccountContent from "../templates/models/concrete_user_account";
 import getConcreteAccountRelatedEntitySkeletonContent from "../templates/models/concrete_account_related_entity";
@@ -72,18 +71,6 @@ export class ModelFilesBuilder {
 
         if (newIndependentModelsNameInPascalCaseList.length > 0 || newAccountRelatedModelsNameInPascalCaseList.length > 0) {
             showInfo(`New user models for ${this.databaseType} have been added`);
-        }
-
-        await this.StartExternalGenerator();
-    }
-
-    private async StartExternalGenerator() {
-        if (vscode.workspace.workspaceFolders) {
-            let folder = vscode.workspace.workspaceFolders[0];
-            showInfo(`Starting builder. Waiting for result...`);
-            vscode.tasks.onDidEndTask((event) => showInfo(`All completed. Successfully finished the code generation task ${event.execution.task.name}`));
-            await vscode.tasks.executeTask(FlutterHooks.createPubBuildRunnerCleanTask(folder));
-            await vscode.tasks.executeTask(FlutterHooks.createPubBuildRunnerBuildTask(folder));
         }
     }
 

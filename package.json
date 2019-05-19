@@ -35,7 +35,8 @@
 	],
 	"icon": "docs/media/orm-m8.png",
 	"activationEvents": [
-		"onCommand:extension.fOrmM8SqliteGenerateFixture"
+		"onCommand:extension.fOrmM8SqliteGenerateFixture",
+		"onCommand:extension.fOrmM8SqliteRegenerateFixture"
 	],
 	"extensionDependencies": [
 		"Dart-Code.dart-code",
@@ -47,6 +48,10 @@
 			{
 				"command": "extension.fOrmM8SqliteGenerateFixture",
 				"title": "f-orm-m8: Generate Sqlite Fixture"
+			},
+			{
+				"command": "extension.fOrmM8SqliteRegenerateFixture",
+				"title": "f-orm-m8: Regenerate"
 			}
 		]
 	},
