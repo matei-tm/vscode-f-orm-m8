@@ -1,6 +1,10 @@
 # Flutter ORM M8 Generator
 
-VS Code extension to generate models and database adapters based on [f-orm-m8](https://github.com/matei-tm/f-orm-m8) framework for Flutter application
+VS Code extension to generate models and database adapter based on [f-orm-m8](https://github.com/matei-tm/f-orm-m8) framework for Flutter application
+
+[![GitHub release](https://img.shields.io/github/release-pre/matei-tm/vscode-f-orm-m8.svg)](https://github.com/matei-tm/vscode-f-orm-m8/releases/)
+[![vs marketplace version](https://img.shields.io/visual-studio-marketplace/v/matei-tm.f-orm-m8-generator.svg)](https://marketplace.visualstudio.com/items?itemName=matei-tm.f-orm-m8-generator)
+[![license](https://img.shields.io/github/license/matei-tm/vscode-f-orm-m8.svg)](LICENSE)
 
 ![Showcase](https://github.com/matei-tm/vscode-f-orm-m8/blob/develop/docs/media/showcase.gif?raw=true)
 
@@ -16,12 +20,12 @@ VS Code extension to generate models and database adapters based on [f-orm-m8](h
 ## Introduction
 
 This VS Code extension scaffolds a Flutter project, adding [f-orm-m8](https://github.com/matei-tm/f-orm-m8) dependencies and framework.
-The current framework integrates [sqlite-m8-generator](https://github.com/matei-tm/f-orm-m8-sqlite) engine and is dedicated for SQLite data repository.
+The current framework integrates [f-orm-m8-sqlite](https://github.com/matei-tm/f-orm-m8-sqlite) generator engine and is dedicated for SQLite data repository.
 In the future, we plan to extend the generator engines to other data repository types.
 
 ## Features
 
-- Check if the projects is a Flutter one, and add the required dependencies to pubspec.yaml
+- Check if the project is a Flutter one, and add the required dependencies to pubspec.yaml
 - Generates the [f-orm-m8](https://github.com/matei-tm/f-orm-m8) framework folder structure
 - Entering the model name, the user have the possibility to generate templated starter models implementing:
   *  DbEntity
@@ -40,32 +44,21 @@ In the future, we plan to extend the generator engines to other data repository 
 
 ## Documentation
 
-Please see:
+The extension register two commands (accessible from `Command Palette...`):
+
+- `f-orm-m8: Generate Sqlite Fixture` - to interactively generate `f-orm-m8` compatible models and fixture
+- `f-orm-m8: Regenerate` - to regenerate fixture after direct user changes
+
+For more details, please see:
 
 * [Flutter-ORM-M8 Generator documentation for using VS Code](https://matei-tm.github.io/vscode-f-orm-m8/).
 * [f-orm-m8 documentation](https://github.com/matei-tm/f-orm-m8)
-* [sqlite-m8-generator documentation](https://github.com/matei-tm/f-orm-m8-sqlite)
+* [f-orm-m8-sqlite generator documentation](https://github.com/matei-tm/f-orm-m8-sqlite)
+* [f-orm-m8-sqlite generator example](https://github.com/matei-tm/f-orm-m8-sqlite/tree/master/example)
 
 ## Changelog
 
-0.1.0
-
-* initial version
-* f-orm-m8 implementation
-* f-orm-m8-sqlite implementation
-* user input based, template generation for models implementing:
-  *  DbEntity
-  *  DbAccountEntity
-  *  DbAccountRelatedEntity
-* dart generation for SQLite fixture based on f-orm-m8-sqlite
-  * checking flutter project validity
-  * required pubspec dependencies
-  * required models folder
-  * running build-runner tasks (clean & build)
-* dart regeneration of models if user altered the files
-  * running build-runner tasks (clean & build)
-* vscode command "f-orm-m8: Generate Sqlite Fixture"
-* vscode command "f-orm-m8: Regenerate"
+Please see project's [changelog](https://github.com/matei-tm/vscode-f-orm-m8/blob/master/CHANGELOG.md) 
 
 ## Disclaimer
 

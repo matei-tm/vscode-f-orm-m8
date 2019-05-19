@@ -5,6 +5,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+### Changed
+
+* Documentation update
+
 ## [0.1.2] - 2019-05-19
 
 ### Changed

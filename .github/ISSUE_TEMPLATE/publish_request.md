@@ -17,5 +17,5 @@ assignees: ''
 - [ ] Commit with message `#xxxx. Publish review completed`
 - [ ] Package extension ```vsce package```
 - [ ] Publish extension ```vsce publish```
-- [ ] Commit with message `Completed publish closes #xxxx.`
+- [ ] Commit empty ```git commit --allow-empty -m "Completed publish closes #xxxx."```
 
