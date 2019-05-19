@@ -33,7 +33,7 @@
 		"orm-m8",
 		"m8"
 	],
-	"icon": "docs/media/orm-m8.png",
+	"icon": "docs/media/icon.png",
 	"activationEvents": [
 		"onCommand:extension.fOrmM8SqliteGenerateFixture",
 		"onCommand:extension.fOrmM8SqliteRegenerateFixture"
