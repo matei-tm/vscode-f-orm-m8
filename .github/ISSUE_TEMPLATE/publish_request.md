@@ -12,6 +12,7 @@ assignees: ''
 - [ ] Update the package.json with the required version
 - [ ] Update the CHANGELOG.md
 - [ ] Update README.md
+- [ ] Update docs/README.md
 - [ ] Format the code
 - [ ] Run tests ```npm run test``` 
 - [ ] Commit with message `#xxxx. Publish review completed`
