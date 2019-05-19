@@ -5,7 +5,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
-## [0.1.0] - 2019-04-10
+## [0.1.0] - 2019-05-19
 
 ### Added
 
@@ -17,3 +17,11 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
   *  DbAccountEntity
   *  DbAccountRelatedEntity
 * dart generation for SQLite fixture based on f-orm-m8-sqlite
+  * checking flutter project validity
+  * required pubspec dependencies
+  * required models folder
+  * running build-runner tasks (clean & build)
+* dart regeneration of models if user altered the files
+  * running build-runner tasks (clean & build)
+* vscode command "f-orm-m8: Generate Sqlite Fixture"
+* vscode command "f-orm-m8: Regenerate"

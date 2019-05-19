@@ -1,10 +1,10 @@
 # Flutter ORM M8 Generator
 
-VS Code extension to generate database adapters based on [f-orm-m8](https://github.com/matei-tm/f-orm-m8) framework for Flutter application
+VS Code extension to generate models and database adapters based on [f-orm-m8](https://github.com/matei-tm/f-orm-m8) framework for Flutter application
 
 ![Showcase](https://github.com/matei-tm/vscode-f-orm-m8/blob/develop/docs/media/showcase.gif)
 
-- [Flutter ORM M8 Generator](#f-orm-m8-generator)
+- [Flutter ORM M8 Generator](#flutter-orm-m8-generator)
   - [Introduction](#introduction)
   - [Features](#features)
   - [Requirements](#requirements)
@@ -58,6 +58,14 @@ Please see:
   *  DbAccountEntity
   *  DbAccountRelatedEntity
 * dart generation for SQLite fixture based on f-orm-m8-sqlite
+  * checking flutter project validity
+  * required pubspec dependencies
+  * required models folder
+  * running build-runner tasks (clean & build)
+* dart regeneration of models if user altered the files
+  * running build-runner tasks (clean & build)
+* vscode command "f-orm-m8: Generate Sqlite Fixture"
+* vscode command "f-orm-m8: Regenerate"
 
 ## Disclaimer
 
