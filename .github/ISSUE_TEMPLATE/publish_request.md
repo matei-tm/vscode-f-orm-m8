@@ -1,8 +1,8 @@
 ---
 name: Publish request
 about: Publish master branch
-title: ''
-labels: ''
+title: 'Publish version x.x.x'
+labels: 'publish'
 assignees: ''
 
 ---
@@ -13,7 +13,7 @@ assignees: ''
 - [ ] Update the CHANGELOG.md
 - [ ] Update README.md
 - [ ] Format the code
-- [ ] Run tests 
+- [ ] Run tests ```npm run test``` 
 - [ ] Commit with message `#xxxx. Publish review completed`
 - [ ] Package extension ```vsce package```
 - [ ] Publish extension ```vsce publish```

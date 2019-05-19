@@ -15,7 +15,7 @@ const writeFile = promisify(fs.writeFile);
 
 const newIndependentModelInputBoxOptions: vscode.InputBoxOptions = {
     placeHolder: 'YourNewModelName',
-    prompt: 'Input your INDEPENDENT model name in pascal case (Ex: YourNewModel).',
+    prompt: 'DbEntity: Input your INDEPENDENT model name in pascal case (Ex: YourNewModel).',
     ignoreFocusOut: true,
     validateInput: (value) => {
         if (!value.match("^[A-Z][A-z0-9]+$")) {
@@ -26,7 +26,7 @@ const newIndependentModelInputBoxOptions: vscode.InputBoxOptions = {
 
 const newAccountRelatedModelInputBoxOptions: vscode.InputBoxOptions = {
     placeHolder: 'YourNewModelName',
-    prompt: 'Input your ACCOUNT RELATED model name in pascal case (Ex: YourNewModel).',
+    prompt: 'DbAccountRelatedEntity: Input your ACCOUNT RELATED model name in pascal case (Ex: YourNewModel).',
     ignoreFocusOut: true,
     validateInput: (value) => {
         if (!value.match("^[A-Z][A-z0-9]+$")) {
