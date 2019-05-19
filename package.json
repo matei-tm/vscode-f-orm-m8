@@ -4,11 +4,11 @@
 	"description": "Vs Code generator for orm-m8 framework fixture",
 	"version": "0.1.0",
 	"license": "SEE LICENSE IN LICENSE",
-	"publisher": "Mircea-Tiberiu MATEI",
+	"publisher": "matei-tm",
 	"author": {
 		"name": "Mircea-Tiberiu MATEI",
 		"url": "https://github.com/matei-tm/",
-		"email": "mircea@matei-tm.eu"
+		"email": "matei_tm@yahoo.com"
 	},
 	"repository": {
 		"type": "git",
