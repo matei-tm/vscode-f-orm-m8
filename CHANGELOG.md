@@ -5,6 +5,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.1.1] - 2019-05-19
+
+### Fix
+
+* Showcase url
+
 ## [0.1.0] - 2019-05-19
 
 ### Added
