@@ -2,7 +2,7 @@
 
 VS Code extension to generate models and database adapters based on [f-orm-m8](https://github.com/matei-tm/f-orm-m8) framework for Flutter application
 
-![Showcase](https://github.com/matei-tm/vscode-f-orm-m8/blob/develop/docs/media/showcase.gif)
+![Showcase](https://github.com/matei-tm/vscode-f-orm-m8/blob/develop/docs/media/showcase.gif?raw=true)
 
 - [Flutter ORM M8 Generator](#flutter-orm-m8-generator)
   - [Introduction](#introduction)
