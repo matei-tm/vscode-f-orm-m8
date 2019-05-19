@@ -44,7 +44,7 @@ In the future, we plan to extend the generator engines to other data repository 
 
 ## Documentation
 
-The extension register two commands (accessible from `Command Palette...`):
+The extension registers two commands (accessible from `Command Palette...`):
 
 - `f-orm-m8: Generate Sqlite Fixture` - to interactively generate `f-orm-m8` compatible models and fixture
 - `f-orm-m8: Regenerate` - to regenerate fixture after direct user changes
