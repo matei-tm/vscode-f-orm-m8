@@ -54,17 +54,35 @@ export class OrmM8FixtureGenerator {
             await modelFilesBuilder.processModelFiles();
         }
 
-        await this.StartExternalGenerator();
+        await this.StartExternalGeneratorClean();
+        await this.StartExternalGeneratorBuild();
     }
 
-    private async StartExternalGenerator() {
+    private async StartExternalGeneratorClean() {
+        if (vscode.workspace.workspaceFolders) {
+            let folder = vscode.workspace.workspaceFolders[0];
+            showInfo(`Starting clean. Waiting for result...`);
+            await vscode.tasks.executeTask(FlutterHooks.createPubBuildRunnerCleanTask(folder));
+        }
+    }
+
+    private async StartExternalGeneratorBuild() {
         if (vscode.workspace.workspaceFolders) {
             let folder = vscode.workspace.workspaceFolders[0];
             showInfo(`Starting builder. Waiting for result...`);
-            vscode.tasks.onDidEndTask((event) => showInfo(`All completed. Successfully finished the code generation task ${event.execution.task.name}`));
-            await vscode.tasks.executeTask(FlutterHooks.createPubBuildRunnerCleanTask(folder));
+            vscode.tasks.onDidEndTaskProcess((event) => this.showInfoByTask(event.execution.task.name));
             await vscode.tasks.executeTask(FlutterHooks.createPubBuildRunnerBuildTask(folder));
         }
+    }
+
+    private showInfoByTask(taskName: string): any {
+        let infoMessage = `${taskName} was completed`;
+
+        if (taskName == 'build_runner build') {
+            infoMessage = 'All tasks completed';
+        }
+
+        return showInfo(infoMessage);
     }
 
     private getExtensionVersion(extensionContext: vscode.ExtensionContext): any {

@@ -76,7 +76,7 @@ export class FlutterHooks {
             ),
             "$dart-pub-build_runner");
 
-        task.group = vs.TaskGroup.Build;
+        task.group = vs.TaskGroup.Clean;
         task.isBackground = true;
         task.name = `build_runner clean`;
         return task;
