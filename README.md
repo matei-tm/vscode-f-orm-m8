@@ -40,7 +40,7 @@ In the future, we plan to extend the generator engines to other data repository 
 
 ## Installation
 
-[Install from the Visual Studio Code Marketplace](https://marketplace.visualstudio.com/items?itemName=matei-tm.f-orm-m8) or by [searching within VS Code](https://code.visualstudio.com/docs/editor/extension-gallery#_search-for-an-extension).
+[Install from the Visual Studio Code Marketplace](https://marketplace.visualstudio.com/items?itemName=matei-tm.f-orm-m8-generator) or by [searching within VS Code](https://code.visualstudio.com/docs/editor/extension-gallery#_search-for-an-extension) for @id:matei-tm.f-orm-m8-generator.
 
 ## Documentation
 
