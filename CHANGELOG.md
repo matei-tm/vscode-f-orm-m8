@@ -5,6 +5,16 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.1.5] - 2019-05-24
+
+### Fixed
+
+* Documentation marketplace url
+
+### Changed
+
+* Package icon update
+
 ## [0.1.4] - 2019-05-20
 
 ### Changed
