@@ -1,4 +1,4 @@
 export interface IPropertyType {
-    columnName: string;
-    columnType: string;
+  columnName: string;
+  columnType: string;
 }

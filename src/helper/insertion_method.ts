@@ -1,4 +1,4 @@
 export enum InsertionMethod {
-    ADD = "Added",
-    REPLACE = "Replaced"
+  ADD = 'Added',
+  REPLACE = 'Replaced',
 }

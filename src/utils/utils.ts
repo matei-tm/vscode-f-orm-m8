@@ -1,4 +1,4 @@
-const pluralize = require("pluralize");
+const pluralize = require('pluralize');
 
 export type Tuple = [string, string];
 export class Utils {
@@ -27,7 +27,10 @@ export class Utils {
   }
 
   static getEntityNameInPascalCase(entityNameInUnderscoreCase: string) {
-    var entityNameInPascalCase = entityNameInUnderscoreCase.split("_").map((slice)=> slice.substr(0, 1).toUpperCase() + slice.substr(1)).join("");
+    var entityNameInPascalCase = entityNameInUnderscoreCase
+      .split('_')
+      .map(slice => slice.substr(0, 1).toUpperCase() + slice.substr(1))
+      .join('');
 
     return entityNameInPascalCase;
   }

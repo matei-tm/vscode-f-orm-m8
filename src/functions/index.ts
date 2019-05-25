@@ -1,3 +1,3 @@
-import { OrmM8FixtureGenerator } from "../generators/orm_m8_fixture_generator";
+import { OrmM8FixtureGenerator } from '../generators/orm_m8_fixture_generator';
 
-export { OrmM8FixtureGenerator as OrmM8FixtureGenerator };
+export { OrmM8FixtureGenerator };

@@ -1,19 +1,16 @@
-"use strict";
+'use strict';
 
-import * as vscode from "vscode";
-import { openNewGitIssueUrl } from "./web";
+import * as vscode from 'vscode';
+import { openNewGitIssueUrl } from './web';
 
 enum ErrorOptionType {
-  report = "Report issue",
-  ignore = "Ignore"
+  report = 'Report issue',
+  ignore = 'Ignore',
 }
 
-let errorOptions = [
-  { title: ErrorOptionType.report },
-  { title: ErrorOptionType.ignore }
-];
+let errorOptions = [{ title: ErrorOptionType.report }, { title: ErrorOptionType.ignore }];
 
-let messagePrefix: string = "f-orm-m8: ";
+let messagePrefix: string = 'f-orm-m8: ';
 
 export function showInfo(message: string): Thenable<string | undefined> {
   return vscode.window.showInformationMessage(`${messagePrefix}${message}`);
@@ -35,13 +32,11 @@ export function showError(error: Error, isCritical: boolean = false): void {
     
     Error message: ${error.message}`;
 
-  vscode.window
-    .showErrorMessage(message, {}, ...errorOptions)
-    .then((option?: vscode.MessageItem) => {
-      if (option) {
-        handleErrorOptionResponse(option.title, error);
-      }
-    });
+  vscode.window.showErrorMessage(message, {}, ...errorOptions).then((option?: vscode.MessageItem) => {
+    if (option) {
+      handleErrorOptionResponse(option.title, error);
+    }
+  });
 }
 
 function handleErrorOptionResponse(option: string, error: Error) {

@@ -1,11 +1,11 @@
-const openurl = require("openurl");
+const openurl = require('openurl');
 
 export type GitIssueContent = { title: string; body: string };
 
 export function generateNewGitIssueUrl(content: GitIssueContent) {
-  const url: string = `https://github.com/matei-tm/vscode-f-orm-m8/issues/new?title=${
-    content.title
-  }&body=${content.body}`;
+  const url: string = `https://github.com/matei-tm/vscode-f-orm-m8/issues/new?title=${content.title}&body=${
+    content.body
+  }`;
   return url;
 }
 

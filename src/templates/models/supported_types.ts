@@ -1,10 +1,11 @@
 /**
  * Returns a string with the supported types annotated as ignored
-*/
+ */
 export default function getSupportedTypesAsIgnored(): string {
-    const feelFreeComment: string = '/* The next field is annotated as `ignore`. Feel free to adjust or delete it according to your requirements. */';
+  const feelFreeComment: string =
+    '/* The next field is annotated as `ignore`. Feel free to adjust or delete it according to your requirements. */';
 
-    return `
+  return `
   ${feelFreeComment}
   @DataColumn("my_future_bigint_column", metadataLevel: ColumnMetadata.ignore)
   BigInt bigintFutureField;

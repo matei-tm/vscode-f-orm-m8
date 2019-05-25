@@ -1,19 +1,18 @@
-import getHeadingWarning from "../heading_warning";
-import { Utils } from "../../utils/utils";
-import { IPropertyType } from "../../helper/property_type";
-import { DatabaseType } from "../../helper/database_type";
-import getSupportedTypesAsIgnored from "./supported_types";
-
+import getHeadingWarning from '../heading_warning';
+import { Utils } from '../../utils/utils';
+import { IPropertyType } from '../../helper/property_type';
+import { DatabaseType } from '../../helper/database_type';
+import getSupportedTypesAsIgnored from './supported_types';
 
 /**
  * Generates the content for the /models/db_entity.dart file
  * Returns a string with the content
-*/
+ */
 export default function getConcreteAccountRelatedEntitySkeletonContent(
   version: string,
   databaseType: DatabaseType,
   entityNameInPascalCase: string,
-  propertiesList: { [id: string]: IPropertyType } = {}
+  propertiesList: { [id: string]: IPropertyType } = {},
 ): string {
   var headingWarning = getHeadingWarning(version, databaseType);
   var entityNameInUnderscoreCase = Utils.getUnderscoreCasePlural(entityNameInPascalCase);

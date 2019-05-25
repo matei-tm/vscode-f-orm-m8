@@ -3,51 +3,49 @@ import { ModelParser } from './model_parser';
 import { FolderManager } from '../generators/folder_manager';
 
 export class ModelsFolderParser {
+  private folderManager: FolderManager;
+  private existingAccountRelatedEntitiesList: string[] = [];
+  private existingIndependentEntitiesList: string[] = [];
 
-    private folderManager: FolderManager;
-    private existingAccountRelatedEntitiesList: string[] = [];
-    private existingIndependentEntitiesList: string[] = [];
+  constructor(folderManager: FolderManager) {
+    this.folderManager = folderManager;
+  }
 
+  async parseAccountRelatedFolderExistingContent(): Promise<string[]> {
+    console.log('Start parsing existing account related models:');
+    fs.readdir(this.folderManager.accountRelatedModelsFolderPath, (err, files) => {
+      files.map(async file => {
+        await this.processAccountRelatedModelFile(file);
+      });
+    });
 
-    constructor(folderManager: FolderManager) {
-        this.folderManager = folderManager;
-    }
+    return this.existingAccountRelatedEntitiesList;
+  }
 
-    async parseAccountRelatedFolderExistingContent(): Promise<string[]> {
-        console.log("Start parsing existing account related models:");
-        fs.readdir(this.folderManager.accountRelatedModelsFolderPath, (err, files) => {
-            files.map(async (file) => {
-                await this.processAccountRelatedModelFile(file);
-            });
-        });
+  private async processAccountRelatedModelFile(file: string) {
+    var modelParser: ModelParser = new ModelParser(this.folderManager.accountRelatedModelsFolderPath, file);
+    var modelName: string = await modelParser.getModelName();
+    console.log(file);
 
-        return this.existingAccountRelatedEntitiesList;
-    }
+    this.existingAccountRelatedEntitiesList.push(modelName);
+  }
 
-    private async processAccountRelatedModelFile(file: string) {
-        var modelParser: ModelParser = new ModelParser(this.folderManager.accountRelatedModelsFolderPath, file);
-        var modelName: string = await modelParser.getModelName();
-        console.log(file);
+  async parseIndependentFolderExistingContent(): Promise<string[]> {
+    console.log('Start parsing existing independent models:');
+    fs.readdir(this.folderManager.independentModelsFolderPath, (err, files) => {
+      files.map(async file => {
+        await this.processIndependentModelFile(file);
+      });
+    });
 
-        this.existingAccountRelatedEntitiesList.push(modelName);
-    }
+    return this.existingIndependentEntitiesList;
+  }
 
-    async parseIndependentFolderExistingContent(): Promise<string[]> {
-        console.log("Start parsing existing independent models:");
-        fs.readdir(this.folderManager.independentModelsFolderPath, (err, files) => {
-            files.map(async (file) => {
-                await this.processIndependentModelFile(file);
-            });
-        });
+  private async processIndependentModelFile(file: string) {
+    var modelParser: ModelParser = new ModelParser(this.folderManager.independentModelsFolderPath, file);
+    var modelName: string = await modelParser.getModelName();
+    console.log(file);
 
-        return this.existingIndependentEntitiesList;
-    }
-
-    private async processIndependentModelFile(file: string) {
-        var modelParser: ModelParser = new ModelParser(this.folderManager.independentModelsFolderPath, file);
-        var modelName: string = await modelParser.getModelName();
-        console.log(file);
-
-        this.existingIndependentEntitiesList.push(modelName);
-    }
+    this.existingIndependentEntitiesList.push(modelName);
+  }
 }

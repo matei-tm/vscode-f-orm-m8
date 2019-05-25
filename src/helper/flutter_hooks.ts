@@ -1,84 +1,80 @@
-import * as vs from "vscode";
-import { Uri } from "vscode";
+import * as vs from 'vscode';
+import { Uri } from 'vscode';
 
 export class FlutterHooks {
-    static getDartPackages() {
-        var dartExtension = vs.extensions.getExtension('dart-code.dart-code');
+  static getDartPackages() {
+    var dartExtension = vs.extensions.getExtension('dart-code.dart-code');
 
-        if (dartExtension === undefined) {
-            return;
-        }
-
-        if (dartExtension.isActive === false) {
-            dartExtension.activate().then(
-                function () {
-                    console.log("Extension activated");
-                    vs.commands.executeCommand("dart.getPackages");
-                },
-                function () {
-                    console.log("Extension activation failed");
-                }
-            );
-        } else {
-            vs.commands.executeCommand("dart.getPackages");
-        }
+    if (dartExtension === undefined) {
+      return;
     }
 
-    public static createPubBuildRunnerBuildTask(folder: vs.WorkspaceFolder | undefined) {
+    if (dartExtension.isActive === false) {
+      dartExtension.activate().then(
+        function() {
+          console.log('Extension activated');
+          vs.commands.executeCommand('dart.getPackages');
+        },
+        function() {
+          console.log('Extension activation failed');
+        },
+      );
+    } else {
+      vs.commands.executeCommand('dart.getPackages');
+    }
+  }
 
-        if (folder === undefined) {
-            throw new Error("Workspace folder is undefined");
-        }
-
-        let workingDirectory = folder.uri instanceof Uri ? folder.uri.fsPath : folder.uri;
-
-        const task = new vs.Task(
-            {
-                command: "build",
-                type: "flutter",
-            },
-            folder,
-            `build_runner build`,
-            "flutter",
-            new vs.ShellExecution(
-                "flutter",
-                ["packages", "pub", "run", "build_runner", "build", "--delete-conflicting-outputs"],
-                { cwd: workingDirectory },
-            ),
-            "$dart-pub-build_runner");
-
-        task.group = vs.TaskGroup.Build;
-        task.isBackground = true;
-        task.name = `build_runner build`;
-        return task;
+  public static createPubBuildRunnerBuildTask(folder: vs.WorkspaceFolder | undefined) {
+    if (folder === undefined) {
+      throw new Error('Workspace folder is undefined');
     }
 
-    public static createPubBuildRunnerCleanTask(folder: vs.WorkspaceFolder | undefined) {
+    let workingDirectory = folder.uri instanceof Uri ? folder.uri.fsPath : folder.uri;
 
-        if (folder === undefined) {
-            throw new Error("Workspace folder is undefined");
-        }
+    const task = new vs.Task(
+      {
+        command: 'build',
+        type: 'flutter',
+      },
+      folder,
+      `build_runner build`,
+      'flutter',
+      new vs.ShellExecution(
+        'flutter',
+        ['packages', 'pub', 'run', 'build_runner', 'build', '--delete-conflicting-outputs'],
+        { cwd: workingDirectory },
+      ),
+      '$dart-pub-build_runner',
+    );
 
-        let workingDirectory = folder.uri instanceof Uri ? folder.uri.fsPath : folder.uri;
+    task.group = vs.TaskGroup.Build;
+    task.isBackground = true;
+    task.name = `build_runner build`;
+    return task;
+  }
 
-        const task = new vs.Task(
-            {
-                command: "clean",
-                type: "flutter",
-            },
-            folder,
-            `build_runner clean`,
-            "flutter",
-            new vs.ShellExecution(
-                "flutter",
-                ["packages", "pub", "run", "build_runner", "clean"],
-                { cwd: workingDirectory },
-            ),
-            "$dart-pub-build_runner");
-
-        task.group = vs.TaskGroup.Clean;
-        task.isBackground = true;
-        task.name = `build_runner clean`;
-        return task;
+  public static createPubBuildRunnerCleanTask(folder: vs.WorkspaceFolder | undefined) {
+    if (folder === undefined) {
+      throw new Error('Workspace folder is undefined');
     }
+
+    let workingDirectory = folder.uri instanceof Uri ? folder.uri.fsPath : folder.uri;
+
+    const task = new vs.Task(
+      {
+        command: 'clean',
+        type: 'flutter',
+      },
+      folder,
+      `build_runner clean`,
+      'flutter',
+      new vs.ShellExecution('flutter', ['packages', 'pub', 'run', 'build_runner', 'clean'], { cwd: workingDirectory }),
+      '$dart-pub-build_runner',
+    );
+
+    task.group = vs.TaskGroup.Clean;
+    task.isBackground = true;
+    task.name = `build_runner clean`;
+    return task;
+  }
 }
