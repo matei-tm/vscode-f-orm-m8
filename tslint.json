@@ -1,4 +1,5 @@
 {
+	"extends": ["tslint:recommended", "tslint-config-prettier"],
 	"rules": {
 		"no-string-throw": true,
 		"no-unused-expression": true,
