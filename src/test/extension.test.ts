@@ -13,18 +13,18 @@ import { Utils } from '../utils/utils';
 // import * as myExtension from '../extension';
 
 // Defines a Mocha test suite to group tests of similar kind together
-suite('Extension Tests', function() {
-  //Unit tests for Utils class methods
-  test('getUnderscoreCase from PascalCase with digits', function() {
+suite('Extension Tests', () => {
+  // Unit tests for Utils class methods
+  test('getUnderscoreCase from PascalCase with digits', () => {
     assert.equal(Utils.getUnderscoreCase('New01Model'), 'new01_model');
   });
-  test('getUnderscoreCase from PascalCase without digits', function() {
+  test('getUnderscoreCase from PascalCase without digits', () => {
     assert.equal(Utils.getUnderscoreCase('NewModel'), 'new_model');
   });
-  test('getUnderscoreCasePlural from PascalCase with digits', function() {
+  test('getUnderscoreCasePlural from PascalCase with digits', () => {
     assert.equal(Utils.getUnderscoreCasePlural('New01Model'), 'new01_models');
   });
-  test('getUnderscoreCasePlural from PascalCase without digits', function() {
+  test('getUnderscoreCasePlural from PascalCase without digits', () => {
     assert.equal(Utils.getUnderscoreCasePlural('NewModel'), 'new_models');
   });
 });

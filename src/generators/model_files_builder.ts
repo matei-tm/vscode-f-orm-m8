@@ -1,15 +1,15 @@
-import * as vscode from 'vscode';
-import { promisify } from 'util';
 import * as fs from 'fs';
-import { showInfo, showCriticalError, showWarning } from '../helper/messaging';
 import * as Path from 'path';
-import getConcreteUserAccountContent from '../templates/models/concrete_user_account';
-import getConcreteAccountRelatedEntitySkeletonContent from '../templates/models/concrete_account_related_entity';
-import { Utils } from '../utils/utils';
-import { ModelsFolderParser } from '../parser/models_folder_parser';
-import { FolderManager } from './folder_manager';
-import getConcreteIndependentEntitySkeletonContent from '../templates/models/concrete_independent_entity';
+import { promisify } from 'util';
+import * as vscode from 'vscode';
 import { DatabaseType } from '../helper/database_type';
+import { showCriticalError, showInfo, showWarning } from '../helper/messaging';
+import { ModelsFolderParser } from '../parser/models_folder_parser';
+import getConcreteAccountRelatedEntitySkeletonContent from '../templates/models/concrete_account_related_entity';
+import getConcreteIndependentEntitySkeletonContent from '../templates/models/concrete_independent_entity';
+import getConcreteUserAccountContent from '../templates/models/concrete_user_account';
+import { Utils } from '../utils/utils';
+import { FolderManager } from './folder_manager';
 
 const writeFile = promisify(fs.writeFile);
 
@@ -36,13 +36,13 @@ const newAccountRelatedModelInputBoxOptions: vscode.InputBoxOptions = {
 };
 
 export class ModelFilesBuilder {
+
+  public existingAccountRelatedModelsList: string[] = [];
+  public existingIndependentModelsList: string[] = [];
   private extensionVersion: any;
 
   private folderManager: FolderManager;
   private databaseType: DatabaseType;
-
-  existingAccountRelatedModelsList: string[] = [];
-  existingIndependentModelsList: string[] = [];
 
   constructor(currentFolder: string | undefined, extensionVersion: any, databaseType: DatabaseType) {
     this.extensionVersion = extensionVersion;
@@ -52,15 +52,15 @@ export class ModelFilesBuilder {
   }
 
   public async processModelFiles() {
-    let modelsFolderParser: ModelsFolderParser = new ModelsFolderParser(this.folderManager);
+    const modelsFolderParser: ModelsFolderParser = new ModelsFolderParser(this.folderManager);
 
     this.existingAccountRelatedModelsList = await modelsFolderParser.parseAccountRelatedFolderExistingContent();
     this.existingIndependentModelsList = await modelsFolderParser.parseIndependentFolderExistingContent();
 
-    let newIndependentModelsNameInPascalCaseList: string[] = await this.addNewModelFiles(false);
-    let newAccountRelatedModelsNameInPascalCaseList: string[] = await this.addNewModelFiles(true);
+    const newIndependentModelsNameInPascalCaseList: string[] = await this.addNewModelFiles(false);
+    const newAccountRelatedModelsNameInPascalCaseList: string[] = await this.addNewModelFiles(true);
 
-    let allModelsList = newIndependentModelsNameInPascalCaseList.concat(
+    const allModelsList = newIndependentModelsNameInPascalCaseList.concat(
       this.existingIndependentModelsList,
       newAccountRelatedModelsNameInPascalCaseList,
       this.existingAccountRelatedModelsList,
@@ -82,10 +82,10 @@ export class ModelFilesBuilder {
   }
 
   private async addUserAccountModelFile() {
-    var dbUserAccountModelPath = Path.join(this.folderManager.modelsFolderPath, 'user_account.dart');
+    const dbUserAccountModelPath = Path.join(this.folderManager.modelsFolderPath, 'user_account.dart');
 
     try {
-      var concreteUserAccountContent = getConcreteUserAccountContent(this.extensionVersion, this.databaseType);
+      const concreteUserAccountContent = getConcreteUserAccountContent(this.extensionVersion, this.databaseType);
       await writeFile(dbUserAccountModelPath, concreteUserAccountContent, 'utf8');
 
       console.log(`The file ${dbUserAccountModelPath} was created.`);
@@ -97,10 +97,10 @@ export class ModelFilesBuilder {
   }
 
   private async addNewModelFiles(isAccountRelated: boolean): Promise<string[]> {
-    var newModelsNameInPascalCaseList: string[] = [];
+    const newModelsNameInPascalCaseList: string[] = [];
 
     while (true) {
-      var dbModelNameInPascalCase: string | undefined;
+      let dbModelNameInPascalCase: string | undefined;
 
       if (isAccountRelated === true) {
         dbModelNameInPascalCase = await vscode.window.showInputBox(newAccountRelatedModelInputBoxOptions);
@@ -129,9 +129,9 @@ export class ModelFilesBuilder {
 
       newModelsNameInPascalCaseList.push(dbModelNameInPascalCase);
 
-      var modelData: string;
-      var dbModelPath;
-      var modelFileName: string = Utils.getUnderscoreCase(dbModelNameInPascalCase);
+      let modelData: string;
+      let dbModelPath;
+      const modelFileName: string = Utils.getUnderscoreCase(dbModelNameInPascalCase);
 
       if (isAccountRelated === true) {
         modelData = getConcreteAccountRelatedEntitySkeletonContent(

@@ -1,16 +1,16 @@
-import { promisify } from 'util';
 import * as fs from 'fs';
+import { promisify } from 'util';
 import { showCriticalError } from '../helper/messaging';
 const mkdir = promisify(fs.mkdir);
 import * as Path from 'path';
 
 export class FolderManager {
-  currentFolder: string;
-  fragmentsFolderPath: string;
-  fragmentRowsFolderPath: string;
-  modelsFolderPath: string;
-  independentModelsFolderPath: string;
-  accountRelatedModelsFolderPath: string;
+  public currentFolder: string;
+  public fragmentsFolderPath: string;
+  public fragmentRowsFolderPath: string;
+  public modelsFolderPath: string;
+  public independentModelsFolderPath: string;
+  public accountRelatedModelsFolderPath: string;
 
   constructor(currentFolder: string | undefined) {
     this.currentFolder = currentFolder || '';
@@ -23,13 +23,13 @@ export class FolderManager {
     this.init();
   }
 
-  async init() {
+  public async init() {
     await this.addWorkspaceFolder(this.modelsFolderPath);
     await this.addWorkspaceFolder(this.independentModelsFolderPath);
     await this.addWorkspaceFolder(this.accountRelatedModelsFolderPath);
   }
 
-  async addWorkspaceFolder(workspaceFolderPath: fs.PathLike) {
+  public async addWorkspaceFolder(workspaceFolderPath: fs.PathLike) {
     try {
       if (fs.existsSync(workspaceFolderPath)) {
         console.log(`The folder ${workspaceFolderPath} exists.`);
@@ -45,7 +45,7 @@ export class FolderManager {
     }
   }
 
-  userAccountExists(): boolean {
+  public userAccountExists(): boolean {
     if (fs.existsSync(Path.join(this.modelsFolderPath, 'user_account.dart'))) {
       return true;
     }

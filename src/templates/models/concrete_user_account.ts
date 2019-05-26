@@ -1,8 +1,8 @@
-import getHeadingWarning from '../heading_warning';
 import { DatabaseType } from '../../helper/database_type';
+import getHeadingWarning from '../heading_warning';
 
 export default function getConcreteUserAccountContent(version: string, databaseType: DatabaseType): string {
-  var headingWarning = getHeadingWarning(version, databaseType);
+  const headingWarning = getHeadingWarning(version, databaseType);
 
   return `${headingWarning}
 

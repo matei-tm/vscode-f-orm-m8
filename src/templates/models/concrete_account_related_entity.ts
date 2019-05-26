@@ -1,7 +1,7 @@
-import getHeadingWarning from '../heading_warning';
-import { Utils } from '../../utils/utils';
-import { IPropertyType } from '../../helper/property_type';
 import { DatabaseType } from '../../helper/database_type';
+import { IPropertyType } from '../../helper/property_type';
+import { Utils } from '../../utils/utils';
+import getHeadingWarning from '../heading_warning';
 import getSupportedTypesAsIgnored from './supported_types';
 
 /**
@@ -14,8 +14,8 @@ export default function getConcreteAccountRelatedEntitySkeletonContent(
   entityNameInPascalCase: string,
   propertiesList: { [id: string]: IPropertyType } = {},
 ): string {
-  var headingWarning = getHeadingWarning(version, databaseType);
-  var entityNameInUnderscoreCase = Utils.getUnderscoreCasePlural(entityNameInPascalCase);
+  const headingWarning = getHeadingWarning(version, databaseType);
+  const entityNameInUnderscoreCase = Utils.getUnderscoreCasePlural(entityNameInPascalCase);
 
   return `${headingWarning}
 

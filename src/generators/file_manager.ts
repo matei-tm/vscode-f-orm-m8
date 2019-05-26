@@ -1,11 +1,11 @@
-import { showCriticalError } from '../helper/messaging';
-import { promisify } from 'util';
 import * as fs from 'fs';
+import { promisify } from 'util';
+import { showCriticalError } from '../helper/messaging';
 
 const writeFile = promisify(fs.writeFile);
 
 export class FileManager {
-  static async addFileWithContent(generatedFilePath: string, generatedFileContent: string) {
+  public static async addFileWithContent(generatedFilePath: string, generatedFileContent: string) {
     try {
       await writeFile(generatedFilePath, generatedFileContent, 'utf8');
       console.log(`The file ${generatedFilePath} was created.`);

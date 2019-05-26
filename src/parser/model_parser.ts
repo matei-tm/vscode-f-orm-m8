@@ -13,19 +13,19 @@ export class ModelParser {
     this.modelFullPath = path.join(modelsFolderPath.toString(), modelFileName);
   }
 
-  async initialize() {
+  public async initialize() {
     console.log(`Start parsing existing model: ${this.modelsFolderPath}`);
     await fs.readFile(this.modelFullPath, (err, file) => {
       file.forEach(line => console.log(line));
     });
   }
 
-  async getModelName(): Promise<string> {
+  public async getModelName(): Promise<string> {
     if (this.modelFileName === null) {
       await this.initialize();
     }
 
-    var modelFileNameWithoutExtension = this.modelFileName.replace('.dart', '');
+    const modelFileNameWithoutExtension = this.modelFileName.replace('.dart', '');
     return Utils.getEntityNameInPascalCase(modelFileNameWithoutExtension);
   }
 }

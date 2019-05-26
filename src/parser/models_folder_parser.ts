@@ -1,6 +1,6 @@
 import * as fs from 'fs';
-import { ModelParser } from './model_parser';
 import { FolderManager } from '../generators/folder_manager';
+import { ModelParser } from './model_parser';
 
 export class ModelsFolderParser {
   private folderManager: FolderManager;
@@ -11,7 +11,7 @@ export class ModelsFolderParser {
     this.folderManager = folderManager;
   }
 
-  async parseAccountRelatedFolderExistingContent(): Promise<string[]> {
+  public async parseAccountRelatedFolderExistingContent(): Promise<string[]> {
     console.log('Start parsing existing account related models:');
     fs.readdir(this.folderManager.accountRelatedModelsFolderPath, (err, files) => {
       files.map(async file => {
@@ -22,15 +22,7 @@ export class ModelsFolderParser {
     return this.existingAccountRelatedEntitiesList;
   }
 
-  private async processAccountRelatedModelFile(file: string) {
-    var modelParser: ModelParser = new ModelParser(this.folderManager.accountRelatedModelsFolderPath, file);
-    var modelName: string = await modelParser.getModelName();
-    console.log(file);
-
-    this.existingAccountRelatedEntitiesList.push(modelName);
-  }
-
-  async parseIndependentFolderExistingContent(): Promise<string[]> {
+  public async parseIndependentFolderExistingContent(): Promise<string[]> {
     console.log('Start parsing existing independent models:');
     fs.readdir(this.folderManager.independentModelsFolderPath, (err, files) => {
       files.map(async file => {
@@ -41,9 +33,17 @@ export class ModelsFolderParser {
     return this.existingIndependentEntitiesList;
   }
 
+  private async processAccountRelatedModelFile(file: string) {
+    const modelParser: ModelParser = new ModelParser(this.folderManager.accountRelatedModelsFolderPath, file);
+    const modelName: string = await modelParser.getModelName();
+    console.log(file);
+
+    this.existingAccountRelatedEntitiesList.push(modelName);
+  }
+
   private async processIndependentModelFile(file: string) {
-    var modelParser: ModelParser = new ModelParser(this.folderManager.independentModelsFolderPath, file);
-    var modelName: string = await modelParser.getModelName();
+    const modelParser: ModelParser = new ModelParser(this.folderManager.independentModelsFolderPath, file);
+    const modelName: string = await modelParser.getModelName();
     console.log(file);
 
     this.existingIndependentEntitiesList.push(modelName);

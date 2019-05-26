@@ -1,21 +1,21 @@
-import { InsertionMethod } from '../helper/insertion_method';
 import * as vscode from 'vscode';
-import { showError, showInfo, showCriticalError } from '../helper/messaging';
+import { InsertionMethod } from '../helper/insertion_method';
+import { showCriticalError, showError, showInfo } from '../helper/messaging';
 import { GenError } from '../model/gen_error';
 import { Tuple } from './utils';
 
 export class DependenciesSolver {
-  static currentPackageName: string;
-  private _referencedPackages: Array<Tuple>;
-  private _referencedDevPackages: Array<Tuple>;
+  public static currentPackageName: string;
+  private referencedPackages: Tuple[];
+  private referencedDevPackages: Tuple[];
 
-  constructor(referencedPackages: Array<Tuple>, referencedDevPackages: Array<Tuple>) {
-    this._referencedPackages = referencedPackages;
-    this._referencedDevPackages = referencedDevPackages;
+  constructor(referencedPackages: Tuple[], referencedDevPackages: Tuple[]) {
+    this.referencedPackages = referencedPackages;
+    this.referencedDevPackages = referencedDevPackages;
   }
 
-  async solveDependencyOnPackages(currentFolder: any): Promise<boolean> {
-    let result: boolean = true;
+  public async solveDependencyOnPackages(currentFolder: any): Promise<boolean> {
+    const result: boolean = true;
 
     await vscode.workspace
       .openTextDocument(currentFolder + '/pubspec.yaml')
@@ -30,7 +30,7 @@ export class DependenciesSolver {
       DependenciesSolver.currentPackageName = await this.getPackageName(currentFolder);
     }
 
-    let activeTextEditor = vscode.window.activeTextEditor;
+    const activeTextEditor = vscode.window.activeTextEditor;
 
     if (activeTextEditor === undefined) {
       throw new Error('ActiveTextEditor is undefined');
@@ -42,8 +42,8 @@ export class DependenciesSolver {
     const originalLines = pubspecString.split('\n');
     let currentPubspec: string = pubspecString;
 
-    currentPubspec = await this.upsertDependencies(currentPubspec, currentFolder, this._referencedPackages, false);
-    currentPubspec = await this.upsertDependencies(currentPubspec, currentFolder, this._referencedDevPackages, true);
+    currentPubspec = await this.upsertDependencies(currentPubspec, currentFolder, this.referencedPackages, false);
+    currentPubspec = await this.upsertDependencies(currentPubspec, currentFolder, this.referencedDevPackages, true);
 
     vscode.window.activeTextEditor.edit(editBuilder => {
       editBuilder.replace(
@@ -62,7 +62,7 @@ export class DependenciesSolver {
   private async upsertDependencies(
     currentPubspec: string,
     currentFolder: any,
-    referencedPackages: Array<Tuple>,
+    referencedPackages: Tuple[],
     isDevSection: boolean,
   ) {
     for (let i = 0; i < referencedPackages.length; i++) {
@@ -83,7 +83,7 @@ export class DependenciesSolver {
     isDevDependency: boolean,
   ): Promise<string> {
     try {
-      let addDependencyOutput = this.addDependencyByText(currentPubspec, element[0], element[1], isDevDependency);
+      const addDependencyOutput = this.addDependencyByText(currentPubspec, element[0], element[1], isDevDependency);
       currentPubspec = addDependencyOutput.result;
 
       showInfo(`${addDependencyOutput.insertionMethod.toString()} ${element[0]}`);
@@ -116,9 +116,9 @@ export class DependenciesSolver {
 
     const pubspecString = vscode.window.activeTextEditor.document.getText();
 
-    let lines = pubspecString.split('\n');
+    const lines = pubspecString.split('\n');
 
-    let packageNameLineIndex = lines.findIndex(line => line.trim().substr(0, 5) === 'name:');
+    const packageNameLineIndex = lines.findIndex(line => line.trim().substr(0, 5) === 'name:');
 
     if (packageNameLineIndex === -1) {
       return '';
@@ -151,11 +151,11 @@ export class DependenciesSolver {
       pubspecSectionString = `dependencies:`;
     }
 
-    let packagteDependencyString = `${packageName}: ^${packageVersion}`;
+    const packagteDependencyString = `${packageName}: ^${packageVersion}`;
 
     let insertionMethod = InsertionMethod.ADD;
 
-    let lines = pubspecString.split('\n');
+    const lines = pubspecString.split('\n');
 
     let dependencyLineIndex = lines.findIndex(line => line.trim() === pubspecSectionString);
 
@@ -215,6 +215,6 @@ export class DependenciesSolver {
       .join('\n')
       .trim();
 
-    return { insertionMethod: insertionMethod, result: pubspecString };
+    return { insertionMethod, result: pubspecString };
   }
 }

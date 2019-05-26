@@ -11,15 +11,15 @@ export function activate(context: vscode.ExtensionContext) {
   // This line of code will only be executed once when your extension is activated
   console.log('Congratulations, your extension "f-orm-m8-generator" is now active!');
 
-  var generator = new OrmM8FixtureGenerator(context, DatabaseType.SQLITE);
+  const generator = new OrmM8FixtureGenerator(context, DatabaseType.SQLITE);
   // The command has been defined in the package.json file
   // Now provide the implementation of the command with registerCommand
   // The commandId parameter must match the command field in package.json
-  let disposableGenerate = vscode.commands.registerCommand('extension.fOrmM8SqliteGenerateFixture', async () => {
+  const disposableGenerate = vscode.commands.registerCommand('extension.fOrmM8SqliteGenerateFixture', async () => {
     await generator.generateOrmM8FixtureWithModels();
   });
 
-  let disposableRegenerate = vscode.commands.registerCommand('extension.fOrmM8SqliteRegenerateFixture', async () => {
+  const disposableRegenerate = vscode.commands.registerCommand('extension.fOrmM8SqliteRegenerateFixture', async () => {
     await generator.regenerateOrmM8Fixture();
   });
 

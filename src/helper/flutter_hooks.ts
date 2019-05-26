@@ -2,8 +2,8 @@ import * as vs from 'vscode';
 import { Uri } from 'vscode';
 
 export class FlutterHooks {
-  static getDartPackages() {
-    var dartExtension = vs.extensions.getExtension('dart-code.dart-code');
+  public static getDartPackages() {
+    const dartExtension = vs.extensions.getExtension('dart-code.dart-code');
 
     if (dartExtension === undefined) {
       return;
@@ -11,11 +11,11 @@ export class FlutterHooks {
 
     if (dartExtension.isActive === false) {
       dartExtension.activate().then(
-        function() {
+        () => {
           console.log('Extension activated');
           vs.commands.executeCommand('dart.getPackages');
         },
-        function() {
+        () => {
           console.log('Extension activation failed');
         },
       );
@@ -29,7 +29,7 @@ export class FlutterHooks {
       throw new Error('Workspace folder is undefined');
     }
 
-    let workingDirectory = folder.uri instanceof Uri ? folder.uri.fsPath : folder.uri;
+    const workingDirectory = folder.uri instanceof Uri ? folder.uri.fsPath : folder.uri;
 
     const task = new vs.Task(
       {
@@ -58,7 +58,7 @@ export class FlutterHooks {
       throw new Error('Workspace folder is undefined');
     }
 
-    let workingDirectory = folder.uri instanceof Uri ? folder.uri.fsPath : folder.uri;
+    const workingDirectory = folder.uri instanceof Uri ? folder.uri.fsPath : folder.uri;
 
     const task = new vs.Task(
       {

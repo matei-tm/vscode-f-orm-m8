@@ -1,9 +1,9 @@
 import { DatabaseType } from '../helper/database_type';
 
 export default function getHeadingWarning(version: string, databaseType: DatabaseType): string {
-  let extensionName: string = 'vscode-f-orm-m8';
-  let ormM8: string = 'f-orm-m8';
-  let currentTimestamp: number = Date.now();
+  const extensionName: string = 'vscode-f-orm-m8';
+  const ormM8: string = 'f-orm-m8';
+  const currentTimestamp: number = Date.now();
 
   return `
 // GENERATED CODE - DO NOT MODIFY THIS HEADER

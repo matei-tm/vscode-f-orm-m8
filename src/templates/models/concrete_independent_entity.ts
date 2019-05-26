@@ -14,8 +14,8 @@ export default function getConcreteIndependentEntitySkeletonContent(
   entityNameInPascalCase: string,
   propertiesList: { [id: string]: IPropertyType } = {},
 ): string {
-  var headingWarning = getHeadingWarning(version, databaseType);
-  var entityNameInUnderscoreCase = Utils.getUnderscoreCasePlural(entityNameInPascalCase);
+  const headingWarning = getHeadingWarning(version, databaseType);
+  const entityNameInUnderscoreCase = Utils.getUnderscoreCasePlural(entityNameInPascalCase);
 
   return `${headingWarning}
 

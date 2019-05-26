@@ -1,11 +1,11 @@
-import * as vscode from 'vscode';
 import * as fs from 'fs';
-import { DependenciesSolver } from '../utils/dependencies_solver';
-import { showError, showInfo, showCriticalError } from '../helper/messaging';
-import { FlutterHooks } from '../helper/flutter_hooks';
 import * as Path from 'path';
-import { Tuple } from '../utils/utils';
+import * as vscode from 'vscode';
 import { DatabaseType } from '../helper/database_type';
+import { FlutterHooks } from '../helper/flutter_hooks';
+import { showCriticalError, showError, showInfo } from '../helper/messaging';
+import { DependenciesSolver } from '../utils/dependencies_solver';
+import { Tuple } from '../utils/utils';
 import { ModelFilesBuilder } from './model_files_builder';
 
 export class OrmM8FixtureGenerator {
@@ -21,11 +21,11 @@ export class OrmM8FixtureGenerator {
     this.databaseType = databaseType;
   }
 
-  async regenerateOrmM8Fixture() {
+  public async regenerateOrmM8Fixture() {
     await this.generateOrmM8Fixture(false);
   }
 
-  async generateOrmM8FixtureWithModels() {
+  public async generateOrmM8FixtureWithModels() {
     await this.generateOrmM8Fixture(true);
   }
 
@@ -48,7 +48,7 @@ export class OrmM8FixtureGenerator {
     FlutterHooks.getDartPackages();
 
     if (withNewModels) {
-      let modelFilesBuilder: ModelFilesBuilder = new ModelFilesBuilder(
+      const modelFilesBuilder: ModelFilesBuilder = new ModelFilesBuilder(
         this.currentFolder,
         this.extensionVersion,
         this.databaseType,
@@ -62,7 +62,7 @@ export class OrmM8FixtureGenerator {
 
   private async StartExternalGeneratorClean() {
     if (vscode.workspace.workspaceFolders) {
-      let folder = vscode.workspace.workspaceFolders[0];
+      const folder = vscode.workspace.workspaceFolders[0];
       showInfo(`Starting clean. Waiting for result...`);
       await vscode.tasks.executeTask(FlutterHooks.createPubBuildRunnerCleanTask(folder));
     }
@@ -70,7 +70,7 @@ export class OrmM8FixtureGenerator {
 
   private async StartExternalGeneratorBuild() {
     if (vscode.workspace.workspaceFolders) {
-      let folder = vscode.workspace.workspaceFolders[0];
+      const folder = vscode.workspace.workspaceFolders[0];
       showInfo(`Starting builder. Waiting for result...`);
       vscode.tasks.onDidEndTaskProcess(event => this.showInfoByTask(event.execution.task.name));
       await vscode.tasks.executeTask(FlutterHooks.createPubBuildRunnerBuildTask(folder));
@@ -80,7 +80,7 @@ export class OrmM8FixtureGenerator {
   private showInfoByTask(taskName: string): any {
     let infoMessage = `Task "${taskName}" was completed`;
 
-    if (taskName == 'build_runner build') {
+    if (taskName === 'build_runner build') {
       infoMessage = 'All tasks completed';
     }
 
@@ -89,8 +89,8 @@ export class OrmM8FixtureGenerator {
 
   private getExtensionVersion(extensionContext: vscode.ExtensionContext): any {
     try {
-      var extensionPath = Path.join(extensionContext.extensionPath, 'package.json');
-      var packageFile = JSON.parse(fs.readFileSync(extensionPath, 'utf8'));
+      const extensionPath = Path.join(extensionContext.extensionPath, 'package.json');
+      const packageFile = JSON.parse(fs.readFileSync(extensionPath, 'utf8'));
 
       if (packageFile) {
         return packageFile.version;
@@ -105,14 +105,14 @@ export class OrmM8FixtureGenerator {
   }
 
   private isFlutterProjectOnCurrentFolder(): boolean {
-    var currentWorkspace = vscode.workspace;
+    const currentWorkspace = vscode.workspace;
 
     if (currentWorkspace === undefined || currentWorkspace.name === undefined) {
       showError(new Error('A Flutter workspace is not opened in the current session.'), false);
       return false;
     }
 
-    var currentFolder = currentWorkspace.rootPath;
+    const currentFolder = currentWorkspace.rootPath;
 
     if (currentFolder === undefined) {
       showError(new Error('A Flutter folder is not opened in the current workspace.'), false);
@@ -135,7 +135,7 @@ export class OrmM8FixtureGenerator {
   private async addOrUpdateDependencyOnExternalPackages(databaseType: DatabaseType): Promise<string> {
     let databaseDriverPackage: Tuple;
     let fOrmM8Package: Tuple;
-    let myReferencedPackages: Array<Tuple>;
+    let myReferencedPackages: Tuple[];
 
     if (databaseType === DatabaseType.SQLITE) {
       databaseDriverPackage = ['sqflite', '1.1.0'];
@@ -145,11 +145,11 @@ export class OrmM8FixtureGenerator {
       throw new Error('Not implemented database type');
     }
 
-    let flutterOrmM8GeneratorPackage: Tuple = ['f_orm_m8_sqlite', '0.7.0'];
-    let buildRunner: Tuple = ['build_runner', '1.0.0'];
-    let myReferencedDevPackages: Array<Tuple> = [buildRunner, flutterOrmM8GeneratorPackage];
+    const flutterOrmM8GeneratorPackage: Tuple = ['f_orm_m8_sqlite', '0.7.0'];
+    const buildRunner: Tuple = ['build_runner', '1.0.0'];
+    const myReferencedDevPackages: Tuple[] = [buildRunner, flutterOrmM8GeneratorPackage];
 
-    let dependenciesSolver: DependenciesSolver = new DependenciesSolver(myReferencedPackages, myReferencedDevPackages);
+    const dependenciesSolver: DependenciesSolver = new DependenciesSolver(myReferencedPackages, myReferencedDevPackages);
 
     await dependenciesSolver.solveDependencyOnPackages(this.currentFolder);
     return DependenciesSolver.currentPackageName;

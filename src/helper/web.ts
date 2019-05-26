@@ -1,18 +1,18 @@
 const openurl = require('openurl');
 
-export type GitIssueContent = { title: string; body: string };
+export interface IGitIssueContent { title: string; body: string; }
 
-export function generateNewGitIssueUrl(content: GitIssueContent) {
+export function generateNewGitIssueUrl(content: IGitIssueContent) {
   const url: string = `https://github.com/matei-tm/vscode-f-orm-m8/issues/new?title=${content.title}&body=${
     content.body
   }`;
   return url;
 }
 
-export function generateNewGitIssueContent(error: Error): GitIssueContent {
-  let title: string = `Bug Report: ${error.message}`;
+export function generateNewGitIssueContent(error: Error): IGitIssueContent {
+  const title: string = `Bug Report: ${error.message}`;
 
-  let body: string = `
+  const body: string = `
 # Bug Report
 
 ## Description
