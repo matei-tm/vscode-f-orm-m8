@@ -5,6 +5,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.1.6] - 2019-05-26
+
+### Fixed
+
+* Format and linter warnings
+* Removed old parser files
+
 ## [0.1.5] - 2019-05-24
 
 ### Fixed
