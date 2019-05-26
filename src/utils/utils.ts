@@ -43,6 +43,6 @@ export class Utils {
   }
 
   public static consoleLog(message: string) {
-    Utils.consoleLog(message);
+    console.log(message);
   }
 }
