@@ -4,7 +4,6 @@ import { promisify } from 'util';
 import * as vscode from 'vscode';
 import { DatabaseType } from '../helper/database_type';
 import { showCriticalError, showInfo, showWarning } from '../helper/messaging';
-import { ModelsFolderParser } from '../parser/models_folder_parser';
 import getConcreteAccountRelatedEntitySkeletonContent from '../templates/models/concrete_account_related_entity';
 import getConcreteIndependentEntitySkeletonContent from '../templates/models/concrete_independent_entity';
 import getConcreteUserAccountContent from '../templates/models/concrete_user_account';
@@ -53,11 +52,6 @@ export class ModelFilesBuilder {
   }
 
   public async processModelFiles() {
-    const modelsFolderParser: ModelsFolderParser = new ModelsFolderParser(this.folderManager);
-
-    this.existingAccountRelatedModelsList = await modelsFolderParser.parseAccountRelatedFolderExistingContent();
-    this.existingIndependentModelsList = await modelsFolderParser.parseIndependentFolderExistingContent();
-
     const newIndependentModelsNameInPascalCaseList: string[] = await this.addNewModelFiles(false);
     const newAccountRelatedModelsNameInPascalCaseList: string[] = await this.addNewModelFiles(true);
 
@@ -167,7 +161,7 @@ export class ModelFilesBuilder {
   private showWarningOnExistingFile(dbModelNameInPascalCase: string, isAccountRelated: boolean) {
     showWarning(
       `${dbModelNameInPascalCase} model already exists in lib/models/${
-        isAccountRelated ? 'accountrelated' : 'independent'
+      isAccountRelated ? 'accountrelated' : 'independent'
       } folder. Overwriting is disallowed.`,
     );
   }
