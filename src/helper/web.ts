@@ -1,9 +1,12 @@
-export interface IGitIssueContent { title: string; body: string; }
+export interface IGitIssueContent {
+  title: string;
+  body: string;
+}
 
 export function generateNewGitIssueUrl(content: IGitIssueContent) {
   const url: string = `https://github.com/matei-tm/vscode-f-orm-m8/issues/new?title=${content.title}&body=${
     content.body
-    }`;
+  }`;
   return url;
 }
 

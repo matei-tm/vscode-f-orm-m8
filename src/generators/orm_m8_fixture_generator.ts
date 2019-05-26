@@ -149,7 +149,10 @@ export class OrmM8FixtureGenerator {
     const buildRunner: Tuple = ['build_runner', '1.0.0'];
     const myReferencedDevPackages: Tuple[] = [buildRunner, flutterOrmM8GeneratorPackage];
 
-    const dependenciesSolver: DependenciesSolver = new DependenciesSolver(myReferencedPackages, myReferencedDevPackages);
+    const dependenciesSolver: DependenciesSolver = new DependenciesSolver(
+      myReferencedPackages,
+      myReferencedDevPackages,
+    );
 
     await dependenciesSolver.solveDependencyOnPackages(this.currentFolder);
     return DependenciesSolver.currentPackageName;

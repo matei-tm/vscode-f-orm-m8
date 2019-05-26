@@ -3,7 +3,6 @@ import { FolderManager } from '../generators/folder_manager';
 import { Utils } from '../utils/utils';
 import { ModelParser } from './model_parser';
 
-
 export class ModelsFolderParser {
   private folderManager: FolderManager;
   private existingAccountRelatedEntitiesList: string[] = [];

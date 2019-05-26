@@ -38,7 +38,6 @@ const newAccountRelatedModelInputBoxOptions: vscode.InputBoxOptions = {
 };
 
 export class ModelFilesBuilder {
-
   public existingAccountRelatedModelsList: string[] = [];
   public existingIndependentModelsList: string[] = [];
   private extensionVersion: any;
@@ -168,7 +167,7 @@ export class ModelFilesBuilder {
   private showWarningOnExistingFile(dbModelNameInPascalCase: string, isAccountRelated: boolean) {
     showWarning(
       `${dbModelNameInPascalCase} model already exists in lib/models/${
-      isAccountRelated ? 'accountrelated' : 'independent'
+        isAccountRelated ? 'accountrelated' : 'independent'
       } folder. Overwriting is disallowed.`,
     );
   }
