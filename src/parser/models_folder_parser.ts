@@ -1,6 +1,8 @@
 import * as fs from 'fs';
 import { FolderManager } from '../generators/folder_manager';
+import { Utils } from '../utils/utils';
 import { ModelParser } from './model_parser';
+
 
 export class ModelsFolderParser {
   private folderManager: FolderManager;
@@ -12,7 +14,7 @@ export class ModelsFolderParser {
   }
 
   public async parseAccountRelatedFolderExistingContent(): Promise<string[]> {
-    console.log('Start parsing existing account related models:');
+    Utils.consoleLog('Start parsing existing account related models:');
     fs.readdir(this.folderManager.accountRelatedModelsFolderPath, (err, files) => {
       files.map(async file => {
         await this.processAccountRelatedModelFile(file);
@@ -23,7 +25,7 @@ export class ModelsFolderParser {
   }
 
   public async parseIndependentFolderExistingContent(): Promise<string[]> {
-    console.log('Start parsing existing independent models:');
+    Utils.consoleLog('Start parsing existing independent models:');
     fs.readdir(this.folderManager.independentModelsFolderPath, (err, files) => {
       files.map(async file => {
         await this.processIndependentModelFile(file);
@@ -36,7 +38,7 @@ export class ModelsFolderParser {
   private async processAccountRelatedModelFile(file: string) {
     const modelParser: ModelParser = new ModelParser(this.folderManager.accountRelatedModelsFolderPath, file);
     const modelName: string = await modelParser.getModelName();
-    console.log(file);
+    Utils.consoleLog(file);
 
     this.existingAccountRelatedEntitiesList.push(modelName);
   }
@@ -44,7 +46,7 @@ export class ModelsFolderParser {
   private async processIndependentModelFile(file: string) {
     const modelParser: ModelParser = new ModelParser(this.folderManager.independentModelsFolderPath, file);
     const modelName: string = await modelParser.getModelName();
-    console.log(file);
+    Utils.consoleLog(file);
 
     this.existingIndependentEntitiesList.push(modelName);
   }

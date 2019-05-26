@@ -1,5 +1,3 @@
-const pluralize = require('pluralize');
-
 export type Tuple = [string, string];
 export class Utils {
   public static getEntityNamePluralsInPascalCase(entityNameInPascalCase: string): string {
@@ -8,7 +6,7 @@ export class Utils {
 
     const wordsArray = expandDigitUpperWithSpaces.split(' ');
 
-    wordsArray[wordsArray.length - 1] = pluralize(wordsArray[wordsArray.length - 1]);
+    wordsArray[wordsArray.length - 1] = require('pluralize')(wordsArray[wordsArray.length - 1]);
 
     const entityNamePlural = wordsArray.join('');
 
@@ -42,5 +40,9 @@ export class Utils {
     const expandDigitUpperWithSpaces = expandLowerUpperWithSpaces.replace(/([0-9])([A-Z])/g, '$1_$2');
 
     return expandDigitUpperWithSpaces.toLowerCase();
+  }
+
+  public static consoleLog(message: string) {
+    Utils.consoleLog(message);
   }
 }

@@ -3,6 +3,7 @@ import { promisify } from 'util';
 import { showCriticalError } from '../helper/messaging';
 const mkdir = promisify(fs.mkdir);
 import * as Path from 'path';
+import { Utils } from '../utils/utils';
 
 export class FolderManager {
   public currentFolder: string;
@@ -32,14 +33,14 @@ export class FolderManager {
   public async addWorkspaceFolder(workspaceFolderPath: fs.PathLike) {
     try {
       if (fs.existsSync(workspaceFolderPath)) {
-        console.log(`The folder ${workspaceFolderPath} exists.`);
+        Utils.consoleLog(`The folder ${workspaceFolderPath} exists.`);
         return;
       }
 
       await mkdir(workspaceFolderPath);
-      console.log(`The folder ${workspaceFolderPath} was created.`);
+      Utils.consoleLog(`The folder ${workspaceFolderPath} was created.`);
     } catch (error) {
-      console.log(`Something went wrong. The folder ${workspaceFolderPath} was not created.`);
+      Utils.consoleLog(`Something went wrong. The folder ${workspaceFolderPath} was not created.`);
       showCriticalError(error);
       return;
     }

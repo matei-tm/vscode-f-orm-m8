@@ -14,9 +14,10 @@ import { FolderManager } from './folder_manager';
 const writeFile = promisify(fs.writeFile);
 
 const newIndependentModelInputBoxOptions: vscode.InputBoxOptions = {
+  ignoreFocusOut: true,
   placeHolder: 'YourNewModelName',
   prompt: 'DbEntity: Input your INDEPENDENT model name in pascal case (Ex: YourNewModel).',
-  ignoreFocusOut: true,
+
   validateInput: value => {
     if (!value.match('^[A-Z][A-z0-9]+$')) {
       return 'The model name is not validated as PascalCase. Fix the name if you need this model. If you want to exit press ESC. ';
@@ -25,9 +26,10 @@ const newIndependentModelInputBoxOptions: vscode.InputBoxOptions = {
 };
 
 const newAccountRelatedModelInputBoxOptions: vscode.InputBoxOptions = {
+  ignoreFocusOut: true,
   placeHolder: 'YourNewModelName',
   prompt: 'DbAccountRelatedEntity: Input your ACCOUNT RELATED model name in pascal case (Ex: YourNewModel).',
-  ignoreFocusOut: true,
+
   validateInput: value => {
     if (!value.match('^[A-Z][A-z0-9]+$')) {
       return 'The model name is not validated as PascalCase. Fix the name if you need this model. If you want to exit press ESC. ';
@@ -74,7 +76,7 @@ export class ModelFilesBuilder {
       allModelsList.push('UserAccount');
     }
 
-    console.log(allModelsList.toString());
+    Utils.consoleLog(allModelsList.toString());
 
     if (newIndependentModelsNameInPascalCaseList.length > 0 || newAccountRelatedModelsNameInPascalCaseList.length > 0) {
       showInfo(`New user models for ${this.databaseType} have been added`);
@@ -88,9 +90,9 @@ export class ModelFilesBuilder {
       const concreteUserAccountContent = getConcreteUserAccountContent(this.extensionVersion, this.databaseType);
       await writeFile(dbUserAccountModelPath, concreteUserAccountContent, 'utf8');
 
-      console.log(`The file ${dbUserAccountModelPath} was created.`);
+      Utils.consoleLog(`The file ${dbUserAccountModelPath} was created.`);
     } catch (error) {
-      console.log(`Something went wrong. The content file for ${dbUserAccountModelPath} was not created.`);
+      Utils.consoleLog(`Something went wrong. The content file for ${dbUserAccountModelPath} was not created.`);
       showCriticalError(error);
       return;
     }
@@ -152,9 +154,9 @@ export class ModelFilesBuilder {
       try {
         await writeFile(dbModelPath, modelData, 'utf8');
 
-        console.log(`The file ${dbModelPath} was created.`);
+        Utils.consoleLog(`The file ${dbModelPath} was created.`);
       } catch (error) {
-        console.log(`Something went wrong. The content file ${dbModelPath} was not created.`);
+        Utils.consoleLog(`Something went wrong. The content file ${dbModelPath} was not created.`);
         showCriticalError(error);
         break;
       }
@@ -166,7 +168,7 @@ export class ModelFilesBuilder {
   private showWarningOnExistingFile(dbModelNameInPascalCase: string, isAccountRelated: boolean) {
     showWarning(
       `${dbModelNameInPascalCase} model already exists in lib/models/${
-        isAccountRelated ? 'accountrelated' : 'independent'
+      isAccountRelated ? 'accountrelated' : 'independent'
       } folder. Overwriting is disallowed.`,
     );
   }

@@ -65,10 +65,10 @@ export class DependenciesSolver {
     referencedPackages: Tuple[],
     isDevSection: boolean,
   ) {
-    for (let i = 0; i < referencedPackages.length; i++) {
+    for (const referencedPackage of referencedPackages) {
       currentPubspec = await this.solveDependencyOnPackage(
         currentFolder,
-        referencedPackages[i],
+        referencedPackage,
         currentPubspec,
         isDevSection,
       );

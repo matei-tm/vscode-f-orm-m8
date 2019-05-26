@@ -1,7 +1,7 @@
-import getHeadingWarning from '../heading_warning';
-import { Utils } from '../../utils/utils';
 import { DatabaseType } from '../../helper/database_type';
 import { IPropertyType } from '../../helper/property_type';
+import { Utils } from '../../utils/utils';
+import getHeadingWarning from '../heading_warning';
 import getSupportedTypesAsIgnored from './supported_types';
 
 /**

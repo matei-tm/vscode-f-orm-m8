@@ -14,10 +14,8 @@ export class ModelParser {
   }
 
   public async initialize() {
-    console.log(`Start parsing existing model: ${this.modelsFolderPath}`);
-    await fs.readFile(this.modelFullPath, (err, file) => {
-      file.forEach(line => console.log(line));
-    });
+    Utils.consoleLog(`Start parsing existing model: ${this.modelsFolderPath}`);
+    await fs.readFile(this.modelFullPath, (err, file) => Utils.consoleLog(`Error on ${file}: ${err.message}`));
   }
 
   public async getModelName(): Promise<string> {

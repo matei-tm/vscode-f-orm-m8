@@ -3,13 +3,14 @@
 import * as vscode from 'vscode';
 import { OrmM8FixtureGenerator } from './functions';
 import { DatabaseType } from './helper/database_type';
+import { Utils } from './utils/utils';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-  // Use the console to output diagnostic information (console.log) and errors (console.error)
+  // Use the console to output diagnostic information (Utils.consoleLog) and errors (console.error)
   // This line of code will only be executed once when your extension is activated
-  console.log('Congratulations, your extension "f-orm-m8-generator" is now active!');
+  Utils.consoleLog('Congratulations, your extension "f-orm-m8-generator" is now active!');
 
   const generator = new OrmM8FixtureGenerator(context, DatabaseType.SQLITE);
   // The command has been defined in the package.json file
@@ -27,4 +28,6 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() {
+  Utils.consoleLog('The extension "f-orm-m8-generator" was deactivated!');
+}

@@ -1,5 +1,6 @@
 import * as vs from 'vscode';
 import { Uri } from 'vscode';
+import { Utils } from '../utils/utils';
 
 export class FlutterHooks {
   public static getDartPackages() {
@@ -12,11 +13,11 @@ export class FlutterHooks {
     if (dartExtension.isActive === false) {
       dartExtension.activate().then(
         () => {
-          console.log('Extension activated');
+          Utils.consoleLog('Extension activated');
           vs.commands.executeCommand('dart.getPackages');
         },
         () => {
-          console.log('Extension activation failed');
+          Utils.consoleLog('Extension activation failed');
         },
       );
     } else {
