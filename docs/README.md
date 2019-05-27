@@ -2,8 +2,9 @@
 
 VS Code extension to generate models and database adapter based on [f-orm-m8](https://github.com/matei-tm/f-orm-m8) framework for Flutter application
 
-[![GitHub release](https://img.shields.io/github/release-pre/matei-tm/vscode-f-orm-m8.svg)](https://github.com/matei-tm/vscode-f-orm-m8/releases/)
-[![vs marketplace version](https://img.shields.io/visual-studio-marketplace/v/matei-tm.f-orm-m8-generator.svg)](https://marketplace.visualstudio.com/items?itemName=matei-tm.f-orm-m8-generator)
+[![GitHub release](https://img.shields.io/github/release-pre/matei-tm/vscode-f-orm-m8.svg)](https://github.com/matei-tm/vscode-f-orm-m8/releases/) 
+[![vs marketplace version](https://img.shields.io/visual-studio-marketplace/v/matei-tm.f-orm-m8-generator.svg)](https://marketplace.visualstudio.com/items?itemName=matei-tm.f-orm-m8-generator) 
+[![Build Status](https://matei-tm.visualstudio.com/vscode-f-orm-m8/_apis/build/status/matei-tm.vscode-f-orm-m8?branchName=master)](https://matei-tm.visualstudio.com/vscode-f-orm-m8/_build/latest?definitionId=2&branchName=master) 
 [![license](https://img.shields.io/github/license/matei-tm/vscode-f-orm-m8.svg)](LICENSE)
 
 ![Showcase](https://github.com/matei-tm/vscode-f-orm-m8/blob/develop/docs/media/showcase.gif?raw=true)
