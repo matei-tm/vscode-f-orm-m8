@@ -52,10 +52,11 @@ The extension registers two commands (accessible from `Command Palette...`):
 
 For more details, please see:
 
-* [Flutter-ORM-M8 Generator documentation for using VS Code](https://matei-tm.github.io/vscode-f-orm-m8/).
-* [f-orm-m8 documentation](https://github.com/matei-tm/f-orm-m8)
+* ["A simple CRUD Flutter application with f-orm-m8-sqlite" - 5 min article & demo app](https://medium.com/@tm.matei/a-simple-crud-flutter-application-with-f-orm-m8-sqlite-f4a9816678e8?source=friends_link&sk=8a5024bd5d5f14ec0c81eff3e8143657)
+* [The f-orm-m8-sqlite project example app](https://github.com/matei-tm/f-orm-m8-sqlite/tree/master/example) 
+* [The f-orm-m8.info community site](https://f-orm-m8.info/)
+* [f-orm-m8 framework documentation - annotations and conventions](https://github.com/matei-tm/f-orm-m8)
 * [f-orm-m8-sqlite generator documentation](https://github.com/matei-tm/f-orm-m8-sqlite)
-* [f-orm-m8-sqlite generator example](https://github.com/matei-tm/f-orm-m8-sqlite/tree/master/example)
 
 ## Changelog
 

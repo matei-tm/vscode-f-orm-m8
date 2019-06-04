@@ -2,7 +2,7 @@
 	"name": "f-orm-m8-generator",
 	"displayName": "Flutter ORM M8 Generator",
 	"description": "Vs Code generator for orm-m8 framework fixture",
-	"version": "0.1.6",
+	"version": "0.1.7",
 	"license": "SEE LICENSE IN LICENSE",
 	"publisher": "matei-tm",
 	"author": {

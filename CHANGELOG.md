@@ -5,6 +5,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.1.7] - 2019-06-05
+
+### Changed
+
+* Documentation update
+
 ## [0.1.6] - 2019-05-26
 
 ### Fixed
