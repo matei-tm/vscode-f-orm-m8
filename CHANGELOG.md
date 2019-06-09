@@ -5,6 +5,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.1.8] - 2019-06-05
+
+### Changed
+
+* Update on outdated packages
+* Pin the Azure CI to node 10.x
+
 ## [0.1.7] - 2019-06-05
 
 ### Changed
