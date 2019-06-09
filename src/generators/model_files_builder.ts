@@ -161,7 +161,7 @@ export class ModelFilesBuilder {
   private showWarningOnExistingFile(dbModelNameInPascalCase: string, isAccountRelated: boolean) {
     showWarning(
       `${dbModelNameInPascalCase} model already exists in lib/models/${
-      isAccountRelated ? 'accountrelated' : 'independent'
+        isAccountRelated ? 'accountrelated' : 'independent'
       } folder. Overwriting is disallowed.`,
     );
   }
