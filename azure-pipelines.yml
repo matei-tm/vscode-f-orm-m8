@@ -22,7 +22,7 @@ jobs:
           command: custom
           verbose: false
           customCommand: 'run compile'
-      - script: 'node node_modules/vscode/bin/test'
+      - script: 'node out/test/runtest.js'
         displayName: 'Run tests'
   - job: macOS
     pool:
@@ -43,7 +43,7 @@ jobs:
           command: custom
           verbose: false
           customCommand: 'run compile'
-      - script: 'node node_modules/vscode/bin/test'
+      - script: 'node out/test/runtest.js'
         displayName: 'Run tests'
   - job: Linux
     pool:
@@ -69,7 +69,7 @@ jobs:
           /usr/bin/Xvfb :10 -ac >> /tmp/Xvfb.out 2>&1 &
           disown -ar
         displayName: 'Start xvfb'
-      - script: 'node node_modules/vscode/bin/test'
+      - script: 'node out/test/runtest.js'
         displayName: 'Run tests'
         env:
           DISPLAY: :10
