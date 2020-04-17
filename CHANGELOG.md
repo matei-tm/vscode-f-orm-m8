@@ -5,6 +5,15 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.2.0] - 2020-04-18
+
+### Changed
+
+* Updating the project structure to be inline with the latest template (yo code)
+* Update all the outdated packages
+* Changing test framework
+* Switching from tslint to eslint
+
 ## [0.1.8] - 2019-06-05
 
 ### Changed
