@@ -2,7 +2,7 @@
 	"name": "f-orm-m8-generator",
 	"displayName": "Flutter ORM M8 Generator",
 	"description": "Vs Code generator for orm-m8 framework fixture",
-	"version": "0.1.8",
+	"version": "0.1.9",
 	"license": "SEE LICENSE IN LICENSE",
 	"publisher": "matei-tm",
 	"author": {
@@ -66,12 +66,12 @@
 	},
 	"devDependencies": {
 		"@types/mocha": "^2.2.42",
-		"@types/node": "^10.12.21",
-		"prettier": "^1.18.2",
-		"tslint": "^5.17.0",
+		"@types/node": "^10.17.19",
+		"prettier": "^1.19.1",
+		"tslint": "^5.20.1",
 		"tslint-config-prettier": "^1.18.0",
-		"typescript": "^3.3.1",
-		"vscode": "^1.1.28"
+		"typescript": "^3.8.3",
+		"vscode": "^1.1.36"
 	},
 	"dependencies": {
 		"openurl": "^1.1.1",
