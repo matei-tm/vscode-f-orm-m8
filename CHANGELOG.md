@@ -5,6 +5,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.2.1] - 2020-07-19
+
+### Changed
+
+* Update all the outdated packages
+* Update vulnerable lodash package 4.17.15 to 4.17.19
+
 ## [0.2.0] - 2020-04-18
 
 ### Changed
