@@ -26,7 +26,6 @@ jobs:
         displayName: 'Run tests'
   - job: macOS
     pool:
-      name: Hosted macOS
       vmImage: 'macOS-latest'
       demands: npm
     steps:
@@ -48,7 +47,6 @@ jobs:
         displayName: 'Run tests'
   - job: Linux
     pool:
-      name: Hosted Ubuntu
       vmImage: 'ubuntu-latest'
       demands: npm
     steps:
