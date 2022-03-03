@@ -26,7 +26,7 @@ jobs:
         displayName: 'Run tests'
   - job: macOS
     pool:
-      name: Hosted macOS
+      vmImage: 'macOS-latest'
       demands: npm
     steps:
       - task: NodeTool@0
@@ -47,7 +47,7 @@ jobs:
         displayName: 'Run tests'
   - job: Linux
     pool:
-      name: Hosted Ubuntu 1604
+      vmImage: 'ubuntu-latest'
       demands: npm
     steps:
       - task: NodeTool@0
