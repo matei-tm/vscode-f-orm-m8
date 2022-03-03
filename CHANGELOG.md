@@ -5,6 +5,14 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.2.2] - 2022-03-03
+
+### Changed
+
+* Fix the build pipeline. Changed the old pool resources for Linux and Mac
+* Update vulnerable ajv from 6.12.0 to 6.12.6
+* Update the vscode engine from 1.47.0 to 1.64.0
+
 ## [0.2.1] - 2020-07-19
 
 ### Changed
