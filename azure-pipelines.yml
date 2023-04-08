@@ -5,7 +5,7 @@ trigger:
 jobs:
   - job: Windows
     pool:
-      name: Hosted VS2022
+      vmImage: 'windows-2022'
       demands: npm
     steps:
       - task: NodeTool@0
